@@ -1,0 +1,197 @@
+<MODULE>
+LCD_4bit_AT89LP51RC2
+</MODULE>
+
+<OPTC51>
+--model-small
+</OPTC51>
+
+<SEGMENTS>
+R_GSINIT,code,0000,NO
+R_BSEG,bit,0000,NO
+R_XSEG,xdata,0000,NO
+BIT_BANK,data,0000,OV
+R_CONST,code,008A,NO
+rbank0,data,0000,OV
+R_PSEG,xdata,0000,NO
+R_DINIT,code,0000,NO
+R_DSEG,data,0011,NO
+R_OSEG,data,0000,OV
+R_IXSEG,xdata,0000,NO
+R_ISEG,idata,0000,NO
+R_HOME,code,0000,NO
+R_XINIT,code,0000,NO
+R_CSEG,code,00B6,NO
+</SEGMENTS>
+
+<LOCALS>
+L002004?,R_CSEG,0048,0000
+L002002?,R_CSEG,007C,0000
+L002001?,R_CSEG,0062,0000
+__str_0,R_CONST,0000,0000
+__str_1,R_CONST,0010,0000
+__str_2,R_CONST,001E,0000
+__str_3,R_CONST,0078,0000
+L002013?,R_CSEG,0041,0000
+L002026?,R_CSEG,005F,0000
+L002024?,R_CSEG,004B,0000
+L002009?,R_CSEG,009E,0000
+L002007?,R_CSEG,0087,0000
+</LOCALS>
+
+<PUBLICS>
+_main,R_CSEG,0000,0000
+_mystr,R_DSEG,0000,0011
+</PUBLICS>
+
+<EXTERNALS>
+_LCDprint,any,0000,0000
+_LCD_4BIT,any,0000,0000
+_printf,any,0000,0000
+_LCDprint_PARM_2,any,0000,0000
+_LCDprint_PARM_3,any,0000,0000
+_getchar,any,0000,0000
+_crt0,any,0000,0000
+_waitms,any,0000,0000
+</EXTERNALS>
+
+<CODE AT 0000>
+</CODE>
+
+<CODE R_HOME>
+</CODE>
+
+<CODE R_GSINIT>
+</CODE>
+
+<CODE R_CSEG>
+</CODE>
+
+<CODE AT 0000>
+02 addr16(_crt0;)  
+</CODE>
+
+<CODE R_HOME>
+</CODE>
+
+<CODE R_GSINIT>
+</CODE>
+
+<CODE R_GSINIT>
+</CODE>
+
+<CODE R_DINIT>
+</CODE>
+
+<CODE R_CSEG>
+90 01 F4
+12 addr16(_waitms;)  
+12 addr16(_LCD_4BIT;)  
+75 data8(_LCDprint_PARM_2;) 01
+D2 bit(_LCDprint_PARM_3;)
+90 data16(__str_0;)  
+75 F0 80
+12 addr16(_LCDprint;)  
+75 data8(_LCDprint_PARM_2;) 02
+D2 bit(_LCDprint_PARM_3;)
+90 data16(__str_1;)  
+75 F0 80
+12 addr16(_LCDprint;)  
+74 10
+C0 E0
+E4
+C0 E0
+74 data8(__str_2;)
+C0 E0
+74 data8(__str_2;0x0008;>>;)
+C0 E0
+74 80
+C0 E0
+12 addr16(_printf;)  
+E5 81
+24 FB
+F5 81
+30 98 rel3(L002013?;)
+7A 00
+7B 00
+BB 10 rel3(L002024?;)
+50 rel2(L002007?;)
+C0 02
+C0 03
+12 addr16(_getchar;)  
+AC 82
+D0 03
+D0 02
+BC 0A rel3(L002026?;)
+80 rel2(L002001?;)
+BC 0D rel3(L002002?;)
+EA
+24 data8(_mystr;)
+F8
+76 00
+75 data8(_LCDprint_PARM_2;) 02
+D2 bit(_LCDprint_PARM_3;)
+90 data16(_mystr;)  
+75 F0 40
+C0 02
+12 addr16(_LCDprint;)  
+D0 02
+80 rel2(L002007?;)
+EB
+24 data8(_mystr;)
+F8
+A6 04
+0B
+8B 02
+80 rel2(L002004?;)
+BA 10 rel3(L002009?;)
+EA
+24 data8(_mystr;)
+F8
+76 00
+75 data8(_LCDprint_PARM_2;) 02
+D2 bit(_LCDprint_PARM_3;)
+90 data16(_mystr;)  
+75 F0 40
+12 addr16(_LCDprint;)  
+74 data8(__str_3;)
+C0 E0
+74 data8(__str_3;0x0008;>>;)
+C0 E0
+74 80
+C0 E0
+12 addr16(_printf;)  
+15 81
+15 81
+15 81
+02 addr16(L002013?;)  
+</CODE>
+
+<CODE R_CSEG>
+</CODE>
+
+<CODE R_XINIT>
+</CODE>
+
+<CODE R_CONST>
+4C 43 44 20 34 2D 62 69 74 20 74 65 73 74 3A 
+00
+48 65 6C 6C 6F 2C 20 57 6F 72 6C 64 21 
+00
+4C 43 44 20 74 65 73 74 2E 
+0A
+54 79 70 65 20 73 6F 6D 65 74 68 69 6E 67 20 61 6E
+64 20 70 72 65 73 73 20 3C 45 6E 74 65 72 3E 
+0A
+28 69 74 20 77 69 6C 6C 20 73 68 6F 77 20 69 6E 20
+
+74 68 65 20 4C 43 44 2C 20 25 64 20 63 68 61 72 61
+63 74 65 72 73 20 6D 61 78 29 3A 20 
+00
+0A
+54 79 70 65 20 73 6F 6D 65 74 68 69 6E 67 3A 20 
+00
+</CODE>
+
+<CODE AT 0003>
+</CODE>

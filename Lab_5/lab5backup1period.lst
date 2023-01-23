@@ -1,0 +1,1955 @@
+0000              1   ;--------------------------------------------------------
+0000              2   ; File Created by C51
+0000              3   ; Version 1.0.0 #1069 (Apr 23 2015) (MSVC)
+0000              4   ; This file was generated Wed Mar 09 21:31:39 2022
+0000              5   ;--------------------------------------------------------
+                  5   $name lab5backup1period
+                  6   $optc51 --model-small
+                  7   $printf_float
+0000              9            R_DSEG    segment data
+0000             10            R_CSEG    segment code
+0000             11            R_BSEG    segment bit
+0000             12            R_XSEG    segment xdata
+0000             13            R_PSEG    segment xdata
+0000             14            R_ISEG    segment idata
+0000             15            R_OSEG    segment data overlay
+0000             16            BIT_BANK  segment data overlay
+0000             17            R_HOME    segment code
+0000             18            R_GSINIT  segment code
+0000             19            R_IXSEG   segment xdata
+0000             20            R_CONST   segment code
+0000             21            R_XINIT   segment code
+0000             22            R_DINIT   segment code
+0000             23   
+0000             24   ;--------------------------------------------------------
+0000             25   ; Public variables in this module
+0000             26   ;--------------------------------------------------------
+0000             27            public _main
+0000             28            public _GetADC
+0000             29            public _waitms
+0000             30            public _wait_us
+0000             31            public __c51_external_startup
+0000             32            public _SPIWrite
+0000             33   ;--------------------------------------------------------
+0000             34   ; Special Function Registers
+0000             35   ;--------------------------------------------------------
+0000             36   _ACC            DATA 0xe0
+0000             37   _B              DATA 0xf0
+0000             38   _PSW            DATA 0xd0
+0000             39   _SP             DATA 0x81
+0000             40   _SPX            DATA 0xef
+0000             41   _DPL            DATA 0x82
+0000             42   _DPH            DATA 0x83
+0000             43   _DPLB           DATA 0xd4
+0000             44   _DPHB           DATA 0xd5
+0000             45   _PAGE           DATA 0xf6
+0000             46   _AX             DATA 0xe1
+0000             47   _BX             DATA 0xf7
+0000             48   _DSPR           DATA 0xe2
+0000             49   _FIRD           DATA 0xe3
+0000             50   _MACL           DATA 0xe4
+0000             51   _MACH           DATA 0xe5
+0000             52   _PCON           DATA 0x87
+0000             53   _AUXR           DATA 0x8e
+0000             54   _AUXR1          DATA 0xa2
+0000             55   _DPCF           DATA 0xa1
+0000             56   _CKRL           DATA 0x97
+0000             57   _CKCKON0        DATA 0x8f
+0000             58   _CKCKON1        DATA 0xaf
+0000             59   _CKSEL          DATA 0x85
+0000             60   _CLKREG         DATA 0xae
+0000             61   _OSCCON         DATA 0x85
+0000             62   _IE             DATA 0xa8
+0000             63   _IEN0           DATA 0xa8
+0000             64   _IEN1           DATA 0xb1
+0000             65   _IPH0           DATA 0xb7
+0000             66   _IP             DATA 0xb8
+0000             67   _IPL0           DATA 0xb8
+0000             68   _IPH1           DATA 0xb3
+0000             69   _IPL1           DATA 0xb2
+0000             70   _P0             DATA 0x80
+0000             71   _P1             DATA 0x90
+0000             72   _P2             DATA 0xa0
+0000             73   _P3             DATA 0xb0
+0000             74   _P4             DATA 0xc0
+0000             75   _P0M0           DATA 0xe6
+0000             76   _P0M1           DATA 0xe7
+0000             77   _P1M0           DATA 0xd6
+0000             78   _P1M1           DATA 0xd7
+0000             79   _P2M0           DATA 0xce
+0000             80   _P2M1           DATA 0xcf
+0000             81   _P3M0           DATA 0xc6
+0000             82   _P3M1           DATA 0xc7
+0000             83   _P4M0           DATA 0xbe
+0000             84   _P4M1           DATA 0xbf
+0000             85   _SCON           DATA 0x98
+0000             86   _SBUF           DATA 0x99
+0000             87   _SADEN          DATA 0xb9
+0000             88   _SADDR          DATA 0xa9
+0000             89   _BDRCON         DATA 0x9b
+0000             90   _BRL            DATA 0x9a
+0000             91   _TCON           DATA 0x88
+0000             92   _TMOD           DATA 0x89
+0000             93   _TCONB          DATA 0x91
+0000             94   _TL0            DATA 0x8a
+0000             95   _TH0            DATA 0x8c
+0000             96   _TL1            DATA 0x8b
+0000             97   _TH1            DATA 0x8d
+0000             98   _RL0            DATA 0xf2
+0000             99   _RH0            DATA 0xf4
+0000            100   _RL1            DATA 0xf3
+0000            101   _RH1            DATA 0xf5
+0000            102   _WDTRST         DATA 0xa6
+0000            103   _WDTPRG         DATA 0xa7
+0000            104   _T2CON          DATA 0xc8
+0000            105   _T2MOD          DATA 0xc9
+0000            106   _RCAP2H         DATA 0xcb
+0000            107   _RCAP2L         DATA 0xca
+0000            108   _TH2            DATA 0xcd
+0000            109   _TL2            DATA 0xcc
+0000            110   _SPCON          DATA 0xc3
+0000            111   _SPSTA          DATA 0xc4
+0000            112   _SPDAT          DATA 0xc5
+0000            113   _SSCON          DATA 0x93
+0000            114   _SSCS           DATA 0x94
+0000            115   _SSDAT          DATA 0x95
+0000            116   _SSADR          DATA 0x96
+0000            117   _KBLS           DATA 0x9c
+0000            118   _KBE            DATA 0x9d
+0000            119   _KBF            DATA 0x9e
+0000            120   _KBMOD          DATA 0x9f
+0000            121   _BMSEL          DATA 0x92
+0000            122   _FCON           DATA 0xd2
+0000            123   _EECON          DATA 0xd2
+0000            124   _ACSRA          DATA 0xa3
+0000            125   _ACSRB          DATA 0xab
+0000            126   _AREF           DATA 0xbd
+0000            127   _DADC           DATA 0xa4
+0000            128   _DADI           DATA 0xa5
+0000            129   _DADL           DATA 0xac
+0000            130   _DADH           DATA 0xad
+0000            131   _CCON           DATA 0xd8
+0000            132   _CMOD           DATA 0xd9
+0000            133   _CL             DATA 0xe9
+0000            134   _CH             DATA 0xf9
+0000            135   _CCAPM0         DATA 0xda
+0000            136   _CCAPM1         DATA 0xdb
+0000            137   _CCAPM2         DATA 0xdc
+0000            138   _CCAPM3         DATA 0xdd
+0000            139   _CCAPM4         DATA 0xde
+0000            140   _CCAP0H         DATA 0xfa
+0000            141   _CCAP1H         DATA 0xfb
+0000            142   _CCAP2H         DATA 0xfc
+0000            143   _CCAP3H         DATA 0xfd
+0000            144   _CCAP4H         DATA 0xfe
+0000            145   _CCAP0L         DATA 0xea
+0000            146   _CCAP1L         DATA 0xeb
+0000            147   _CCAP2L         DATA 0xec
+0000            148   _CCAP3L         DATA 0xed
+0000            149   _CCAP4L         DATA 0xee
+0000            150   ;--------------------------------------------------------
+0000            151   ; special function bits
+0000            152   ;--------------------------------------------------------
+0000            153   _ACC_0          BIT 0xe0
+0000            154   _ACC_1          BIT 0xe1
+0000            155   _ACC_2          BIT 0xe2
+0000            156   _ACC_3          BIT 0xe3
+0000            157   _ACC_4          BIT 0xe4
+0000            158   _ACC_5          BIT 0xe5
+0000            159   _ACC_6          BIT 0xe6
+0000            160   _ACC_7          BIT 0xe7
+0000            161   _B_0            BIT 0xf0
+0000            162   _B_1            BIT 0xf1
+0000            163   _B_2            BIT 0xf2
+0000            164   _B_3            BIT 0xf3
+0000            165   _B_4            BIT 0xf4
+0000            166   _B_5            BIT 0xf5
+0000            167   _B_6            BIT 0xf6
+0000            168   _B_7            BIT 0xf7
+0000            169   _P              BIT 0xd0
+0000            170   _F1             BIT 0xd1
+0000            171   _OV             BIT 0xd2
+0000            172   _RS0            BIT 0xd3
+0000            173   _RS1            BIT 0xd4
+0000            174   _F0             BIT 0xd5
+0000            175   _AC             BIT 0xd6
+0000            176   _CY             BIT 0xd7
+0000            177   _EX0            BIT 0xa8
+0000            178   _ET0            BIT 0xa9
+0000            179   _EX1            BIT 0xaa
+0000            180   _ET1            BIT 0xab
+0000            181   _ES             BIT 0xac
+0000            182   _ET2            BIT 0xad
+0000            183   _EC             BIT 0xae
+0000            184   _EA             BIT 0xaf
+0000            185   _PX0            BIT 0xb8
+0000            186   _PT0            BIT 0xb9
+0000            187   _PX1            BIT 0xba
+0000            188   _PT1            BIT 0xbb
+0000            189   _PS             BIT 0xbc
+0000            190   _PT2            BIT 0xbd
+0000            191   _IP0D           BIT 0xbf
+0000            192   _PPCL           BIT 0xbe
+0000            193   _PT2L           BIT 0xbd
+0000            194   _PLS            BIT 0xbc
+0000            195   _PT1L           BIT 0xbb
+0000            196   _PX1L           BIT 0xba
+0000            197   _PT0L           BIT 0xb9
+0000            198   _PX0L           BIT 0xb8
+0000            199   _P0_0           BIT 0x80
+0000            200   _P0_1           BIT 0x81
+0000            201   _P0_2           BIT 0x82
+0000            202   _P0_3           BIT 0x83
+0000            203   _P0_4           BIT 0x84
+0000            204   _P0_5           BIT 0x85
+0000            205   _P0_6           BIT 0x86
+0000            206   _P0_7           BIT 0x87
+0000            207   _P1_0           BIT 0x90
+0000            208   _P1_1           BIT 0x91
+0000            209   _P1_2           BIT 0x92
+0000            210   _P1_3           BIT 0x93
+0000            211   _P1_4           BIT 0x94
+0000            212   _P1_5           BIT 0x95
+0000            213   _P1_6           BIT 0x96
+0000            214   _P1_7           BIT 0x97
+0000            215   _P2_0           BIT 0xa0
+0000            216   _P2_1           BIT 0xa1
+0000            217   _P2_2           BIT 0xa2
+0000            218   _P2_3           BIT 0xa3
+0000            219   _P2_4           BIT 0xa4
+0000            220   _P2_5           BIT 0xa5
+0000            221   _P2_6           BIT 0xa6
+0000            222   _P2_7           BIT 0xa7
+0000            223   _P3_0           BIT 0xb0
+0000            224   _P3_1           BIT 0xb1
+0000            225   _P3_2           BIT 0xb2
+0000            226   _P3_3           BIT 0xb3
+0000            227   _P3_4           BIT 0xb4
+0000            228   _P3_5           BIT 0xb5
+0000            229   _P3_6           BIT 0xb6
+0000            230   _P3_7           BIT 0xb7
+0000            231   _RXD            BIT 0xb0
+0000            232   _TXD            BIT 0xb1
+0000            233   _INT0           BIT 0xb2
+0000            234   _INT1           BIT 0xb3
+0000            235   _T0             BIT 0xb4
+0000            236   _T1             BIT 0xb5
+0000            237   _WR             BIT 0xb6
+0000            238   _RD             BIT 0xb7
+0000            239   _P4_0           BIT 0xc0
+0000            240   _P4_1           BIT 0xc1
+0000            241   _P4_2           BIT 0xc2
+0000            242   _P4_3           BIT 0xc3
+0000            243   _P4_4           BIT 0xc4
+0000            244   _P4_5           BIT 0xc5
+0000            245   _P4_6           BIT 0xc6
+0000            246   _P4_7           BIT 0xc7
+0000            247   _RI             BIT 0x98
+0000            248   _TI             BIT 0x99
+0000            249   _RB8            BIT 0x9a
+0000            250   _TB8            BIT 0x9b
+0000            251   _REN            BIT 0x9c
+0000            252   _SM2            BIT 0x9d
+0000            253   _SM1            BIT 0x9e
+0000            254   _SM0            BIT 0x9f
+0000            255   _IT0            BIT 0x88
+0000            256   _IE0            BIT 0x89
+0000            257   _IT1            BIT 0x8a
+0000            258   _IE1            BIT 0x8b
+0000            259   _TR0            BIT 0x8c
+0000            260   _TF0            BIT 0x8d
+0000            261   _TR1            BIT 0x8e
+0000            262   _TF1            BIT 0x8f
+0000            263   _CP_RL2         BIT 0xc8
+0000            264   _C_T2           BIT 0xc9
+0000            265   _TR2            BIT 0xca
+0000            266   _EXEN2          BIT 0xcb
+0000            267   _TCLK           BIT 0xcc
+0000            268   _RCLK           BIT 0xcd
+0000            269   _EXF2           BIT 0xce
+0000            270   _TF2            BIT 0xcf
+0000            271   _CF             BIT 0xdf
+0000            272   _CR             BIT 0xde
+0000            273   _CCF4           BIT 0xdc
+0000            274   _CCF3           BIT 0xdb
+0000            275   _CCF2           BIT 0xda
+0000            276   _CCF1           BIT 0xd9
+0000            277   _CCF0           BIT 0xd8
+0000            278   ;--------------------------------------------------------
+0000            279   ; overlayable register banks
+0000            280   ;--------------------------------------------------------
+0000            281            rbank0 segment data overlay
+0000            282   ;--------------------------------------------------------
+0000            283   ; internal ram data
+0000            284   ;--------------------------------------------------------
+0000            285            rseg R_DSEG
+0000            286   _main_half_period0_1_34:
+0000            287            ds 4
+0004            288   _main_half_period1_1_34:
+0004            289            ds 4
+0008            290   _main_qPeriod0_1_34:
+0008            291            ds 4
+000C            292   _main_time0_1_34:
+000C            293            ds 4
+0010            294   _main_time1_1_34:
+0010            295            ds 4
+0014            296   _main_qPeriod1_1_34:
+0014            297            ds 4
+0018            298   _main_OVcnt_1_34:
+0018            299            ds 2
+001A            300   _main_OVcnt1_1_34:
+001A            301            ds 2
+001C            302   _main_pVolt0_1_34:
+001C            303            ds 4
+0020            304   _main_pVolt1_1_34:
+0020            305            ds 4
+0024            306   _main_pVolt0rms_1_34:
+0024            307            ds 4
+0028            308   ;--------------------------------------------------------
+0028            309   ; overlayable items in internal ram 
+0028            310   ;--------------------------------------------------------
+0000            311            rseg    R_OSEG
+0000            312   ;--------------------------------------------------------
+0000            313   ; indirectly addressable internal ram data
+0000            314   ;--------------------------------------------------------
+0000            315            rseg R_ISEG
+0000            316   ;--------------------------------------------------------
+0000            317   ; absolute internal ram data
+0000            318   ;--------------------------------------------------------
+0000            319            DSEG
+0000            320   ;--------------------------------------------------------
+0000            321   ; bit data
+0000            322   ;--------------------------------------------------------
+0000            323            rseg R_BSEG
+0000            324   ;--------------------------------------------------------
+0000            325   ; paged external ram data
+0000            326   ;--------------------------------------------------------
+0000            327            rseg R_PSEG
+0000            328   ;--------------------------------------------------------
+0000            329   ; external ram data
+0000            330   ;--------------------------------------------------------
+0000            331            rseg R_XSEG
+0000            332   ;--------------------------------------------------------
+0000            333   ; absolute external ram data
+0000            334   ;--------------------------------------------------------
+0000            335            XSEG
+0000            336   ;--------------------------------------------------------
+0000            337   ; external initialized ram data
+0000            338   ;--------------------------------------------------------
+0000            339            rseg R_IXSEG
+0000            340            rseg R_HOME
+0000            341            rseg R_GSINIT
+0000            342            rseg R_CSEG
+0000            343   ;--------------------------------------------------------
+0000            344   ; Reset entry point and interrupt vectors
+0000            345   ;--------------------------------------------------------
+0000            346            CSEG at 0x0000
+0000 020100     347            ljmp    _crt0
+0003            348   ;--------------------------------------------------------
+0003            349   ; global & static initialisations
+0003            350   ;--------------------------------------------------------
+0000            351            rseg R_HOME
+0000            352            rseg R_GSINIT
+0000            353            rseg R_GSINIT
+0000            354   ;--------------------------------------------------------
+0000            355   ; data variables initialization
+0000            356   ;--------------------------------------------------------
+0000            357            rseg R_DINIT
+0000            358            ; The linker places a 'ret' at the end of segment R_DINIT.
+0000            359   ;--------------------------------------------------------
+0000            360   ; code
+0000            361   ;--------------------------------------------------------
+0000            362            rseg R_CSEG
+0000            363   ;------------------------------------------------------------
+0000            364   ;Allocation info for local variables in function 'SPIWrite'
+0000            365   ;------------------------------------------------------------
+0000            366   ;out_byte                  Allocated to registers 
+0000            367   ;------------------------------------------------------------
+0000            368   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:19: unsigned char SPIWrite(unsigned char out_byte)
+0000            369   ;        -----------------------------------------
+0000            370   ;         function SPIWrite
+0000            371   ;        -----------------------------------------
+0000            372   _SPIWrite:
+0000            373            using   0
+0000 8582E0     374            mov     _ACC,dpl
+0003            375   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:24: BB_MOSI=ACC_7; BB_SCLK=1; B_7=BB_MISO; BB_SCLK=0;
+0003 A2E7       376            mov     c,_ACC_7
+0005 92A1       377            mov     _P2_1,c
+0007 D2A3       378            setb    _P2_3
+0009 A2A2       379            mov     c,_P2_2
+000B 92F7       380            mov     _B_7,c
+000D C2A3       381            clr     _P2_3
+000F            382   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:25: BB_MOSI=ACC_6; BB_SCLK=1; B_6=BB_MISO; BB_SCLK=0;
+000F A2E6       383            mov     c,_ACC_6
+0011 92A1       384            mov     _P2_1,c
+0013 D2A3       385            setb    _P2_3
+0015 A2A2       386            mov     c,_P2_2
+0017 92F6       387            mov     _B_6,c
+0019 C2A3       388            clr     _P2_3
+001B            389   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:26: BB_MOSI=ACC_5; BB_SCLK=1; B_5=BB_MISO; BB_SCLK=0;
+001B A2E5       390            mov     c,_ACC_5
+001D 92A1       391            mov     _P2_1,c
+001F D2A3       392            setb    _P2_3
+0021 A2A2       393            mov     c,_P2_2
+0023 92F5       394            mov     _B_5,c
+0025 C2A3       395            clr     _P2_3
+0027            396   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:27: BB_MOSI=ACC_4; BB_SCLK=1; B_4=BB_MISO; BB_SCLK=0;
+0027 A2E4       397            mov     c,_ACC_4
+0029 92A1       398            mov     _P2_1,c
+002B D2A3       399            setb    _P2_3
+002D A2A2       400            mov     c,_P2_2
+002F 92F4       401            mov     _B_4,c
+0031 C2A3       402            clr     _P2_3
+0033            403   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:28: BB_MOSI=ACC_3; BB_SCLK=1; B_3=BB_MISO; BB_SCLK=0;
+0033 A2E3       404            mov     c,_ACC_3
+0035 92A1       405            mov     _P2_1,c
+0037 D2A3       406            setb    _P2_3
+0039 A2A2       407            mov     c,_P2_2
+003B 92F3       408            mov     _B_3,c
+003D C2A3       409            clr     _P2_3
+003F            410   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:29: BB_MOSI=ACC_2; BB_SCLK=1; B_2=BB_MISO; BB_SCLK=0;
+003F A2E2       411            mov     c,_ACC_2
+0041 92A1       412            mov     _P2_1,c
+0043 D2A3       413            setb    _P2_3
+0045 A2A2       414            mov     c,_P2_2
+0047 92F2       415            mov     _B_2,c
+0049 C2A3       416            clr     _P2_3
+004B            417   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:30: BB_MOSI=ACC_1; BB_SCLK=1; B_1=BB_MISO; BB_SCLK=0;
+004B A2E1       418            mov     c,_ACC_1
+004D 92A1       419            mov     _P2_1,c
+004F D2A3       420            setb    _P2_3
+0051 A2A2       421            mov     c,_P2_2
+0053 92F1       422            mov     _B_1,c
+0055 C2A3       423            clr     _P2_3
+0057            424   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:31: BB_MOSI=ACC_0; BB_SCLK=1; B_0=BB_MISO; BB_SCLK=0;
+0057 A2E0       425            mov     c,_ACC_0
+0059 92A1       426            mov     _P2_1,c
+005B D2A3       427            setb    _P2_3
+005D A2A2       428            mov     c,_P2_2
+005F 92F0       429            mov     _B_0,c
+0061 C2A3       430            clr     _P2_3
+0063            431   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:33: return B;
+0063 85F082     432            mov     dpl,_B
+0066 22         433            ret
+0067            434   ;------------------------------------------------------------
+0067            435   ;Allocation info for local variables in function '_c51_external_startup'
+0067            436   ;------------------------------------------------------------
+0067            437   ;------------------------------------------------------------
+0067            438   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:36: unsigned char _c51_external_startup(void)
+0067            439   ;        -----------------------------------------
+0067            440   ;         function _c51_external_startup
+0067            441   ;        -----------------------------------------
+0067            442   __c51_external_startup:
+0067            443   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:38: AUXR=0B_0001_0001; // 1152 bytes of internal XDATA, P4.4 is a general purpose I/O
+0067 758E11     444            mov     _AUXR,#0x11
+006A            445   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:40: P0M0=0x00; P0M1=0x00;    
+006A 75E600     446            mov     _P0M0,#0x00
+006D 75E700     447            mov     _P0M1,#0x00
+0070            448   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:41: P1M0=0x00; P1M1=0x00;    
+0070 75D600     449            mov     _P1M0,#0x00
+0073 75D700     450            mov     _P1M1,#0x00
+0076            451   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:42: P2M0=0x00; P2M1=0x00;    
+0076 75CE00     452            mov     _P2M0,#0x00
+0079 75CF00     453            mov     _P2M1,#0x00
+007C            454   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:43: P3M0=0x00; P3M1=0x00;    
+007C 75C600     455            mov     _P3M0,#0x00
+007F 75C700     456            mov     _P3M1,#0x00
+0082            457   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:44: PCON|=0x80;
+0082 438780     458            orl     _PCON,#0x80
+0085            459   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:45: SCON = 0x52;
+0085 759852     460            mov     _SCON,#0x52
+0088            461   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:46: BDRCON=0;
+0088 759B00     462            mov     _BDRCON,#0x00
+008B            463   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:50: BRL=BRG_VAL;
+008B 759AF4     464            mov     _BRL,#0xF4
+008E            465   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:51: BDRCON=BRR|TBCK|RBCK|SPD;
+008E 759B1E     466            mov     _BDRCON,#0x1E
+0091            467   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:53: CLKREG=0x00; // TPS=0000B
+0091 75AE00     468            mov     _CLKREG,#0x00
+0094            469   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:55: return 0;
+0094 758200     470            mov     dpl,#0x00
+0097 22         471            ret
+0098            472   ;------------------------------------------------------------
+0098            473   ;Allocation info for local variables in function 'wait_us'
+0098            474   ;------------------------------------------------------------
+0098            475   ;x                         Allocated to registers r2 
+0098            476   ;j                         Allocated to registers r2 r3 
+0098            477   ;------------------------------------------------------------
+0098            478   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:58: void wait_us (unsigned char x)
+0098            479   ;        -----------------------------------------
+0098            480   ;         function wait_us
+0098            481   ;        -----------------------------------------
+0098            482   _wait_us:
+0098 AA82       483            mov     r2,dpl
+009A            484   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:62: TR0=0; // Stop timer 0
+009A C28C       485            clr     _TR0
+009C            486   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:63: TMOD&=0xf0; // Clear the configuration bits for timer 0
+009C 5389F0     487            anl     _TMOD,#0xF0
+009F            488   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:64: TMOD|=0x01; // Mode 1: 16-bit timer
+009F 438901     489            orl     _TMOD,#0x01
+00A2            490   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:66: if(x>5) x-=5; // Subtract the overhead
+00A2 EA         491            mov     a,r2
+00A3 24FA       492            add     a,#0xff - 0x05
+00A5 5001       493            jnc     L004002?
+00A7 EA         494            mov     a,r2
+00A8 24FB       495            add     a,#0xfb
+00AA FA         496            mov     r2,a
+00AB 8001       497            sjmp    L004003?
+00AD            498   L004002?:
+00AD            499   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:67: else x=1;
+00AD 7A01       500            mov     r2,#0x01
+00AF            501   L004003?:
+00AF            502   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:69: j=-ONE_USEC*x;
+00AF 8A00       503            mov     __mullong_PARM_2,r2
+00B1 750100     504            mov     (__mullong_PARM_2 + 1),#0x00
+00B4 750200     505            mov     (__mullong_PARM_2 + 2),#0x00
+00B7 750300     506            mov     (__mullong_PARM_2 + 3),#0x00
+00BA 90FFEA     507            mov     dptr,#0xFFEA
+00BD 74FF       508            mov     a,#0xFF
+00BF F5F0       509            mov     b,a
+00C1 120100     510            lcall   __mullong
+00C4 AA82       511            mov     r2,dpl
+00C6 AB83       512            mov     r3,dph
+00C8            513   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:70: TF0=0;
+00C8 C28D       514            clr     _TF0
+00CA            515   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:71: TH0=j/0x100;
+00CA 8B04       516            mov     ar4,r3
+00CC 7D00       517            mov     r5,#0x00
+00CE 8C8C       518            mov     _TH0,r4
+00D0            519   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:72: TL0=j%0x100;
+00D0 7B00       520            mov     r3,#0x00
+00D2 8A8A       521            mov     _TL0,r2
+00D4            522   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:73: TR0=1; // Start timer 0
+00D4 D28C       523            setb    _TR0
+00D6            524   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:74: while(TF0==0); //Wait for overflow
+00D6            525   L004004?:
+00D6 308D30     526            jnb     _TF0,L004004?
+00D9 22         527            ret
+00DA            528   ;------------------------------------------------------------
+00DA            529   ;Allocation info for local variables in function 'waitms'
+00DA            530   ;------------------------------------------------------------
+00DA            531   ;ms                        Allocated to registers r2 r3 
+00DA            532   ;j                         Allocated to registers r4 r5 
+00DA            533   ;k                         Allocated to registers r6 
+00DA            534   ;------------------------------------------------------------
+00DA            535   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:77: void waitms (unsigned int ms)
+00DA            536   ;        -----------------------------------------
+00DA            537   ;         function waitms
+00DA            538   ;        -----------------------------------------
+00DA            539   _waitms:
+00DA AA82       540            mov     r2,dpl
+00DC AB83       541            mov     r3,dph
+00DE            542   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:81: for(j=0; j<ms; j++)
+00DE 7C00       543            mov     r4,#0x00
+00E0 7D00       544            mov     r5,#0x00
+00E2            545   L005005?:
+00E2 C3         546            clr     c
+00E3 EC         547            mov     a,r4
+00E4 9A         548            subb    a,r2
+00E5 ED         549            mov     a,r5
+00E6 9B         550            subb    a,r3
+00E7 5001       551            jnc     L005009?
+00E9            552   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:82: for (k=0; k<4; k++) wait_us(250);
+00E9 7E00       553            mov     r6,#0x00
+00EB            554   L005001?:
+00EB BE0430     555            cjne    r6,#0x04,L005018?
+00EE            556   L005018?:
+00EE 5001       557            jnc     L005007?
+00F0 7582FA     558            mov     dpl,#0xFA
+00F3 C002       559            push    ar2
+00F5 C003       560            push    ar3
+00F7 C004       561            push    ar4
+00F9 C005       562            push    ar5
+00FB C006       563            push    ar6
+00FD 120100     564            lcall   _wait_us
+0100 D006       565            pop     ar6
+0102 D005       566            pop     ar5
+0104 D004       567            pop     ar4
+0106 D003       568            pop     ar3
+0108 D002       569            pop     ar2
+010A 0E         570            inc     r6
+010B 8001       571            sjmp    L005001?
+010D            572   L005007?:
+010D            573   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:81: for(j=0; j<ms; j++)
+010D 0C         574            inc     r4
+010E BC0070     575            cjne    r4,#0x00,L005005?
+0111 0D         576            inc     r5
+0112 8001       577            sjmp    L005005?
+0114            578   L005009?:
+0114 22         579            ret
+0115            580   ;------------------------------------------------------------
+0115            581   ;Allocation info for local variables in function 'GetADC'
+0115            582   ;------------------------------------------------------------
+0115            583   ;channel                   Allocated to registers r2 
+0115            584   ;adc                       Allocated to registers r3 r4 
+0115            585   ;spid                      Allocated to registers r2 
+0115            586   ;------------------------------------------------------------
+0115            587   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:86: unsigned int volatile GetADC(unsigned char channel)
+0115            588   ;        -----------------------------------------
+0115            589   ;         function GetADC
+0115            590   ;        -----------------------------------------
+0115            591   _GetADC:
+0115 AA82       592            mov     r2,dpl
+0117            593   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:91: ADC_CE=0; //Activate the MCP3008 ADC.
+0117 C2A0       594            clr     _P2_0
+0119            595   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:93: SPIWrite(0x01);//Send the start bit.
+0119 758201     596            mov     dpl,#0x01
+011C C002       597            push    ar2
+011E 120100     598            lcall   _SPIWrite
+0121 D002       599            pop     ar2
+0123            600   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:94: spid=SPIWrite((channel*0x10)|0x80);        //Send single/diff* bit, D2, D1, and D0 bits.
+0123 EA         601            mov     a,r2
+0124 C4         602            swap    a
+0125 54F0       603            anl     a,#0xf0
+0127 FA         604            mov     r2,a
+0128 7480       605            mov     a,#0x80
+012A 4A         606            orl     a,r2
+012B F582       607            mov     dpl,a
+012D 120100     608            lcall   _SPIWrite
+0130 AA82       609            mov     r2,dpl
+0132            610   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:95: adc=((spid & 0x03)*0x100);//spid has the two most significant bits of the result.
+0132 7403       611            mov     a,#0x03
+0134 5A         612            anl     a,r2
+0135 FC         613            mov     r4,a
+0136 7B00       614            mov     r3,#0x00
+0138            615   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:96: spid=SPIWrite(0x00);//It doesn't matter what we send now.
+0138 758200     616            mov     dpl,#0x00
+013B C003       617            push    ar3
+013D C004       618            push    ar4
+013F 120100     619            lcall   _SPIWrite
+0142 AA82       620            mov     r2,dpl
+0144 D004       621            pop     ar4
+0146 D003       622            pop     ar3
+0148            623   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:97: adc+=spid;//spid contains the low part of the result. 
+0148 7D00       624            mov     r5,#0x00
+014A EA         625            mov     a,r2
+014B 2B         626            add     a,r3
+014C FB         627            mov     r3,a
+014D ED         628            mov     a,r5
+014E 3C         629            addc    a,r4
+014F FC         630            mov     r4,a
+0150            631   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:99: ADC_CE=1; //Deactivate the MCP3008 ADC.
+0150 D2A0       632            setb    _P2_0
+0152            633   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:101: return adc;
+0152 8B82       634            mov     dpl,r3
+0154 8C83       635            mov     dph,r4
+0156 22         636            ret
+0157            637   ;------------------------------------------------------------
+0157            638   ;Allocation info for local variables in function 'main'
+0157            639   ;------------------------------------------------------------
+0157            640   ;half_period0              Allocated with name '_main_half_period0_1_34'
+0157            641   ;half_period1              Allocated with name '_main_half_period1_1_34'
+0157            642   ;qPeriod0                  Allocated with name '_main_qPeriod0_1_34'
+0157            643   ;time0                     Allocated with name '_main_time0_1_34'
+0157            644   ;time1                     Allocated with name '_main_time1_1_34'
+0157            645   ;qPeriod1                  Allocated with name '_main_qPeriod1_1_34'
+0157            646   ;OVcnt                     Allocated with name '_main_OVcnt_1_34'
+0157            647   ;OVcnt1                    Allocated with name '_main_OVcnt1_1_34'
+0157            648   ;pVolt0                    Allocated with name '_main_pVolt0_1_34'
+0157            649   ;pVolt1                    Allocated with name '_main_pVolt1_1_34'
+0157            650   ;pVolt0rms                 Allocated with name '_main_pVolt0rms_1_34'
+0157            651   ;pVolt1rms                 Allocated to registers r6 r7 r0 r1 
+0157            652   ;timeDiff                  Allocated to registers r2 r3 r4 r5 
+0157            653   ;phase                     Allocated to registers r2 r3 r4 r5 
+0157            654   ;timeDiffsec               Allocated to registers r2 r3 r4 r5 
+0157            655   ;------------------------------------------------------------
+0157            656   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:107: void main (void)  //using ch0 and ch2 for the sin signals 
+0157            657   ;        -----------------------------------------
+0157            658   ;         function main
+0157            659   ;        -----------------------------------------
+0157            660   _main:
+0157            661   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:138: TMOD&=0B_1111_0000; // Clear the configuration bits for timer 0
+0157 5389F0     662            anl     _TMOD,#0xF0
+015A            663   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:139: TMOD|=0B_0000_0001; // Mode 1: 16-bit timer
+015A 438901     664            orl     _TMOD,#0x01
+015D            665   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:146: while(1)
+015D            666   L007062?:
+015D            667   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:151: TF0=0; // Clear overflow flag
+015D C28D       668            clr     _TF0
+015F            669   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:152: TL0=0; // Reset the timer
+015F 758A00     670            mov     _TL0,#0x00
+0162            671   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:153: TH0=0;
+0162 758C00     672            mov     _TH0,#0x00
+0165            673   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:155: while (GetADC(0)>2); // Wait for the signal to be zero
+0165            674   L007001?:
+0165 758200     675            mov     dpl,#0x00
+0168 120100     676            lcall   _GetADC
+016B AA82       677            mov     r2,dpl
+016D AB83       678            mov     r3,dph
+016F C3         679            clr     c
+0170 7402       680            mov     a,#0x02
+0172 9A         681            subb    a,r2
+0173 E4         682            clr     a
+0174 9B         683            subb    a,r3
+0175 4001       684            jc      L007001?
+0177            685   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:156: while (GetADC(0)<4); // Wait for the signal to be one
+0177            686   L007004?:
+0177 758200     687            mov     dpl,#0x00
+017A 120100     688            lcall   _GetADC
+017D AA82       689            mov     r2,dpl
+017F AB83       690            mov     r3,dph
+0181 C3         691            clr     c
+0182 EA         692            mov     a,r2
+0183 9404       693            subb    a,#0x04
+0185 EB         694            mov     a,r3
+0186 9400       695            subb    a,#0x00
+0188 4001       696            jc      L007004?
+018A            697   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:157: TR0=1; // Start timing
+018A D28C       698            setb    _TR0
+018C            699   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:158: while (GetADC(0)>2) // Wait for the signal to be zero   
+018C 7A00       700            mov     r2,#0x00
+018E 7B00       701            mov     r3,#0x00
+0190            702   L007009?:
+0190 758200     703            mov     dpl,#0x00
+0193 C002       704            push    ar2
+0195 C003       705            push    ar3
+0197 120100     706            lcall   _GetADC
+019A AC82       707            mov     r4,dpl
+019C AD83       708            mov     r5,dph
+019E D003       709            pop     ar3
+01A0 D002       710            pop     ar2
+01A2 C3         711            clr     c
+01A3 7402       712            mov     a,#0x02
+01A5 9C         713            subb    a,r4
+01A6 E4         714            clr     a
+01A7 9D         715            subb    a,r5
+01A8 5001       716            jnc     L007011?
+01AA            717   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:160: if (TF0){
+01AA            718   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:161: TF0=0;
+01AA 108DF0     719            jbc     _TF0,L007109?
+01AD 8001       720            sjmp    L007009?
+01AF            721   L007109?:
+01AF            722   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:162: OVcnt++;
+01AF 0A         723            inc     r2
+01B0 BA0070     724            cjne    r2,#0x00,L007009?
+01B3 0B         725            inc     r3
+01B4 8001       726            sjmp    L007009?
+01B6            727   L007011?:
+01B6            728   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:165: TR0=0; // Stop timer 0
+01B6 C28C       729            clr     _TR0
+01B8            730   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:167: half_period0=OVcnt*65536.0+TH0*256.0+TL0; // half_period is a float and is in units of 1/clk. To convert, divide by clk
+01B8 8A82       731            mov     dpl,r2
+01BA 8B83       732            mov     dph,r3
+01BC 120100     733            lcall   ___sint2fs
+01BF AA82       734            mov     r2,dpl
+01C1 AB83       735            mov     r3,dph
+01C3 ACF0       736            mov     r4,b
+01C5 FD         737            mov     r5,a
+01C6 C002       738            push    ar2
+01C8 C003       739            push    ar3
+01CA C004       740            push    ar4
+01CC C005       741            push    ar5
+01CE 900000     742            mov     dptr,#0x0000
+01D1 75F080     743            mov     b,#0x80
+01D4 7447       744            mov     a,#0x47
+01D6 120100     745            lcall   ___fsmul
+01D9 AA82       746            mov     r2,dpl
+01DB AB83       747            mov     r3,dph
+01DD ACF0       748            mov     r4,b
+01DF FD         749            mov     r5,a
+01E0 E581       750            mov     a,sp
+01E2 24FC       751            add     a,#0xfc
+01E4 F581       752            mov     sp,a
+01E6 858C82     753            mov     dpl,_TH0
+01E9 C002       754            push    ar2
+01EB C003       755            push    ar3
+01ED C004       756            push    ar4
+01EF C005       757            push    ar5
+01F1 120100     758            lcall   ___uchar2fs
+01F4 AE82       759            mov     r6,dpl
+01F6 AF83       760            mov     r7,dph
+01F8 A8F0       761            mov     r0,b
+01FA F9         762            mov     r1,a
+01FB C006       763            push    ar6
+01FD C007       764            push    ar7
+01FF C000       765            push    ar0
+0201 C001       766            push    ar1
+0203 900000     767            mov     dptr,#0x0000
+0206 75F080     768            mov     b,#0x80
+0209 7443       769            mov     a,#0x43
+020B 120100     770            lcall   ___fsmul
+020E AE82       771            mov     r6,dpl
+0210 AF83       772            mov     r7,dph
+0212 A8F0       773            mov     r0,b
+0214 F9         774            mov     r1,a
+0215 E581       775            mov     a,sp
+0217 24FC       776            add     a,#0xfc
+0219 F581       777            mov     sp,a
+021B D005       778            pop     ar5
+021D D004       779            pop     ar4
+021F D003       780            pop     ar3
+0221 D002       781            pop     ar2
+0223 C006       782            push    ar6
+0225 C007       783            push    ar7
+0227 C000       784            push    ar0
+0229 C001       785            push    ar1
+022B 8A82       786            mov     dpl,r2
+022D 8B83       787            mov     dph,r3
+022F 8CF0       788            mov     b,r4
+0231 ED         789            mov     a,r5
+0232 120100     790            lcall   ___fsadd
+0235 AA82       791            mov     r2,dpl
+0237 AB83       792            mov     r3,dph
+0239 ACF0       793            mov     r4,b
+023B FD         794            mov     r5,a
+023C E581       795            mov     a,sp
+023E 24FC       796            add     a,#0xfc
+0240 F581       797            mov     sp,a
+0242 AE8A       798            mov     r6,_TL0
+0244 7F00       799            mov     r7,#0x00
+0246 8E82       800            mov     dpl,r6
+0248 8F83       801            mov     dph,r7
+024A C002       802            push    ar2
+024C C003       803            push    ar3
+024E C004       804            push    ar4
+0250 C005       805            push    ar5
+0252 120100     806            lcall   ___sint2fs
+0255 AE82       807            mov     r6,dpl
+0257 AF83       808            mov     r7,dph
+0259 A8F0       809            mov     r0,b
+025B F9         810            mov     r1,a
+025C D005       811            pop     ar5
+025E D004       812            pop     ar4
+0260 D003       813            pop     ar3
+0262 D002       814            pop     ar2
+0264 C006       815            push    ar6
+0266 C007       816            push    ar7
+0268 C000       817            push    ar0
+026A C001       818            push    ar1
+026C 8A82       819            mov     dpl,r2
+026E 8B83       820            mov     dph,r3
+0270 8CF0       821            mov     b,r4
+0272 ED         822            mov     a,r5
+0273 120100     823            lcall   ___fsadd
+0276 8582C0     824            mov     _main_half_period0_1_34,dpl
+0279 8583C1     825            mov     (_main_half_period0_1_34 + 1),dph
+027C 85F0C2     826            mov     (_main_half_period0_1_34 + 2),b
+027F F5C3       827            mov     (_main_half_period0_1_34 + 3),a
+0281 E581       828            mov     a,sp
+0283 24FC       829            add     a,#0xfc
+0285 F581       830            mov     sp,a
+0287            831   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:168: qPeriod0 = half_period0/2.0;
+0287 E4         832            clr     a
+0288 C0E0       833            push    acc
+028A C0E0       834            push    acc
+028C C0E0       835            push    acc
+028E 7440       836            mov     a,#0x40
+0290 C0E0       837            push    acc
+0292 85C082     838            mov     dpl,_main_half_period0_1_34
+0295 85C183     839            mov     dph,(_main_half_period0_1_34 + 1)
+0298 85C2F0     840            mov     b,(_main_half_period0_1_34 + 2)
+029B E5C3       841            mov     a,(_main_half_period0_1_34 + 3)
+029D 120100     842            lcall   ___fsdiv
+02A0 858260     843            mov     _main_qPeriod0_1_34,dpl
+02A3 858361     844            mov     (_main_qPeriod0_1_34 + 1),dph
+02A6 85F062     845            mov     (_main_qPeriod0_1_34 + 2),b
+02A9 F563       846            mov     (_main_qPeriod0_1_34 + 3),a
+02AB E581       847            mov     a,sp
+02AD 24FC       848            add     a,#0xfc
+02AF F581       849            mov     sp,a
+02B1            850   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:170: TF0 = 0;
+02B1 C28D       851            clr     _TF0
+02B3            852   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:171: TL0 = 0;
+02B3 758A00     853            mov     _TL0,#0x00
+02B6            854   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:172: TH0 = 0;
+02B6 758C00     855            mov     _TH0,#0x00
+02B9            856   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:175: while (GetADC(0)>2); // Wait for the signal to be zero
+02B9            857   L007012?:
+02B9 758200     858            mov     dpl,#0x00
+02BC 120100     859            lcall   _GetADC
+02BF AA82       860            mov     r2,dpl
+02C1 AB83       861            mov     r3,dph
+02C3 C3         862            clr     c
+02C4 7402       863            mov     a,#0x02
+02C6 9A         864            subb    a,r2
+02C7 E4         865            clr     a
+02C8 9B         866            subb    a,r3
+02C9 4001       867            jc      L007012?
+02CB            868   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:176: while (GetADC(0)<4); // Wait for the signal to be one
+02CB            869   L007015?:
+02CB 758200     870            mov     dpl,#0x00
+02CE 120100     871            lcall   _GetADC
+02D1 AA82       872            mov     r2,dpl
+02D3 AB83       873            mov     r3,dph
+02D5 C3         874            clr     c
+02D6 EA         875            mov     a,r2
+02D7 9404       876            subb    a,#0x04
+02D9 EB         877            mov     a,r3
+02DA 9400       878            subb    a,#0x00
+02DC 4001       879            jc      L007015?
+02DE            880   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:177: TR0 = 1;
+02DE D28C       881            setb    _TR0
+02E0            882   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:178: while((OVcnt*65536.0+TH0*256.0+TL0)<qPeriod0){
+02E0 E4         883            clr     a
+02E1 F5A0       884            mov     _main_OVcnt_1_34,a
+02E3 F5A1       885            mov     (_main_OVcnt_1_34 + 1),a
+02E5            886   L007020?:
+02E5 85A082     887            mov     dpl,_main_OVcnt_1_34
+02E8 85A183     888            mov     dph,(_main_OVcnt_1_34 + 1)
+02EB 120100     889            lcall   ___sint2fs
+02EE AC82       890            mov     r4,dpl
+02F0 AD83       891            mov     r5,dph
+02F2 AEF0       892            mov     r6,b
+02F4 FF         893            mov     r7,a
+02F5 C004       894            push    ar4
+02F7 C005       895            push    ar5
+02F9 C006       896            push    ar6
+02FB C007       897            push    ar7
+02FD 900000     898            mov     dptr,#0x0000
+0300 75F080     899            mov     b,#0x80
+0303 7447       900            mov     a,#0x47
+0305 120100     901            lcall   ___fsmul
+0308 AC82       902            mov     r4,dpl
+030A AD83       903            mov     r5,dph
+030C AEF0       904            mov     r6,b
+030E FF         905            mov     r7,a
+030F E581       906            mov     a,sp
+0311 24FC       907            add     a,#0xfc
+0313 F581       908            mov     sp,a
+0315 858C82     909            mov     dpl,_TH0
+0318 C004       910            push    ar4
+031A C005       911            push    ar5
+031C C006       912            push    ar6
+031E C007       913            push    ar7
+0320 120100     914            lcall   ___uchar2fs
+0323 A882       915            mov     r0,dpl
+0325 A983       916            mov     r1,dph
+0327 AAF0       917            mov     r2,b
+0329 FB         918            mov     r3,a
+032A C000       919            push    ar0
+032C C001       920            push    ar1
+032E C002       921            push    ar2
+0330 C003       922            push    ar3
+0332 900000     923            mov     dptr,#0x0000
+0335 75F080     924            mov     b,#0x80
+0338 7443       925            mov     a,#0x43
+033A 120100     926            lcall   ___fsmul
+033D AA82       927            mov     r2,dpl
+033F AB83       928            mov     r3,dph
+0341 A8F0       929            mov     r0,b
+0343 F9         930            mov     r1,a
+0344 E581       931            mov     a,sp
+0346 24FC       932            add     a,#0xfc
+0348 F581       933            mov     sp,a
+034A D007       934            pop     ar7
+034C D006       935            pop     ar6
+034E D005       936            pop     ar5
+0350 D004       937            pop     ar4
+0352 C002       938            push    ar2
+0354 C003       939            push    ar3
+0356 C000       940            push    ar0
+0358 C001       941            push    ar1
+035A 8C82       942            mov     dpl,r4
+035C 8D83       943            mov     dph,r5
+035E 8EF0       944            mov     b,r6
+0360 EF         945            mov     a,r7
+0361 120100     946            lcall   ___fsadd
+0364 AA82       947            mov     r2,dpl
+0366 AB83       948            mov     r3,dph
+0368 ACF0       949            mov     r4,b
+036A FD         950            mov     r5,a
+036B E581       951            mov     a,sp
+036D 24FC       952            add     a,#0xfc
+036F F581       953            mov     sp,a
+0371 AE8A       954            mov     r6,_TL0
+0373 7F00       955            mov     r7,#0x00
+0375 8E82       956            mov     dpl,r6
+0377 8F83       957            mov     dph,r7
+0379 C002       958            push    ar2
+037B C003       959            push    ar3
+037D C004       960            push    ar4
+037F C005       961            push    ar5
+0381 120100     962            lcall   ___sint2fs
+0384 AE82       963            mov     r6,dpl
+0386 AF83       964            mov     r7,dph
+0388 A8F0       965            mov     r0,b
+038A F9         966            mov     r1,a
+038B D005       967            pop     ar5
+038D D004       968            pop     ar4
+038F D003       969            pop     ar3
+0391 D002       970            pop     ar2
+0393 C006       971            push    ar6
+0395 C007       972            push    ar7
+0397 C000       973            push    ar0
+0399 C001       974            push    ar1
+039B 8A82       975            mov     dpl,r2
+039D 8B83       976            mov     dph,r3
+039F 8CF0       977            mov     b,r4
+03A1 ED         978            mov     a,r5
+03A2 120100     979            lcall   ___fsadd
+03A5 AA82       980            mov     r2,dpl
+03A7 AB83       981            mov     r3,dph
+03A9 ACF0       982            mov     r4,b
+03AB FD         983            mov     r5,a
+03AC E581       984            mov     a,sp
+03AE 24FC       985            add     a,#0xfc
+03B0 F581       986            mov     sp,a
+03B2 C060       987            push    _main_qPeriod0_1_34
+03B4 C061       988            push    (_main_qPeriod0_1_34 + 1)
+03B6 C062       989            push    (_main_qPeriod0_1_34 + 2)
+03B8 C063       990            push    (_main_qPeriod0_1_34 + 3)
+03BA 8A82       991            mov     dpl,r2
+03BC 8B83       992            mov     dph,r3
+03BE 8CF0       993            mov     b,r4
+03C0 ED         994            mov     a,r5
+03C1 120100     995            lcall   ___fslt
+03C4 AA82       996            mov     r2,dpl
+03C6 E581       997            mov     a,sp
+03C8 24FC       998            add     a,#0xfc
+03CA F581       999            mov     sp,a
+03CC EA        1000            mov     a,r2
+03CD 6001      1001            jz      L007022?
+03CF           1002   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:179: if (TF0){
+03CF           1003   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:180: TF0=0;
+03CF 108D30    1004            jbc     _TF0,L007114?
+03D2 020100    1005            ljmp    L007020?
+03D5           1006   L007114?:
+03D5           1007   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:181: OVcnt++;                  
+03D5 05A0      1008            inc     _main_OVcnt_1_34
+03D7 E4        1009            clr     a
+03D8 B5A070    1010            cjne    a,_main_OVcnt_1_34,L007115?
+03DB 05A1      1011            inc     (_main_OVcnt_1_34 + 1)
+03DD           1012   L007115?:
+03DD 020100    1013            ljmp    L007020?
+03E0           1014   L007022?:
+03E0           1015   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:184: TR0 = 0;
+03E0 C28C      1016            clr     _TR0
+03E2           1017   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:185: pVolt0=(GetADC(0)*VREF)/1023.0;
+03E2 758200    1018            mov     dpl,#0x00
+03E5 120100    1019            lcall   _GetADC
+03E8 120100    1020            lcall   ___uint2fs
+03EB AA82      1021            mov     r2,dpl
+03ED AB83      1022            mov     r3,dph
+03EF ACF0      1023            mov     r4,b
+03F1 FD        1024            mov     r5,a
+03F2 C002      1025            push    ar2
+03F4 C003      1026            push    ar3
+03F6 C004      1027            push    ar4
+03F8 C005      1028            push    ar5
+03FA 90126F    1029            mov     dptr,#0x126F
+03FD 75F083    1030            mov     b,#0x83
+0400 7440      1031            mov     a,#0x40
+0402 120100    1032            lcall   ___fsmul
+0405 AA82      1033            mov     r2,dpl
+0407 AB83      1034            mov     r3,dph
+0409 ACF0      1035            mov     r4,b
+040B FD        1036            mov     r5,a
+040C E581      1037            mov     a,sp
+040E 24FC      1038            add     a,#0xfc
+0410 F581      1039            mov     sp,a
+0412 E4        1040            clr     a
+0413 C0E0      1041            push    acc
+0415 74C0      1042            mov     a,#0xC0
+0417 C0E0      1043            push    acc
+0419 747F      1044            mov     a,#0x7F
+041B C0E0      1045            push    acc
+041D 7444      1046            mov     a,#0x44
+041F C0E0      1047            push    acc
+0421 8A82      1048            mov     dpl,r2
+0423 8B83      1049            mov     dph,r3
+0425 8CF0      1050            mov     b,r4
+0427 ED        1051            mov     a,r5
+0428 120100    1052            lcall   ___fsdiv
+042B 858240    1053            mov     _main_pVolt0_1_34,dpl
+042E 858341    1054            mov     (_main_pVolt0_1_34 + 1),dph
+0431 85F042    1055            mov     (_main_pVolt0_1_34 + 2),b
+0434 F543      1056            mov     (_main_pVolt0_1_34 + 3),a
+0436 E581      1057            mov     a,sp
+0438 24FC      1058            add     a,#0xfc
+043A F581      1059            mov     sp,a
+043C           1060   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:186: time0 = (half_period0/22118.400)*2.0; //period in milliseconds  
+043C 74CD      1061            mov     a,#0xCD
+043E C0E0      1062            push    acc
+0440 74CC      1063            mov     a,#0xCC
+0442 C0E0      1064            push    acc
+0444 74AC      1065            mov     a,#0xAC
+0446 C0E0      1066            push    acc
+0448 7446      1067            mov     a,#0x46
+044A C0E0      1068            push    acc
+044C 85C082    1069            mov     dpl,_main_half_period0_1_34
+044F 85C183    1070            mov     dph,(_main_half_period0_1_34 + 1)
+0452 85C2F0    1071            mov     b,(_main_half_period0_1_34 + 2)
+0455 E5C3      1072            mov     a,(_main_half_period0_1_34 + 3)
+0457 120100    1073            lcall   ___fsdiv
+045A AE82      1074            mov     r6,dpl
+045C AF83      1075            mov     r7,dph
+045E A8F0      1076            mov     r0,b
+0460 F9        1077            mov     r1,a
+0461 E581      1078            mov     a,sp
+0463 24FC      1079            add     a,#0xfc
+0465 F581      1080            mov     sp,a
+0467 C006      1081            push    ar6
+0469 C007      1082            push    ar7
+046B C000      1083            push    ar0
+046D C001      1084            push    ar1
+046F 900000    1085            mov     dptr,#(0x00&0x00ff)
+0472 E4        1086            clr     a
+0473 F5F0      1087            mov     b,a
+0475 7440      1088            mov     a,#0x40
+0477 120100    1089            lcall   ___fsmul
+047A 8582B0    1090            mov     _main_time0_1_34,dpl
+047D 8583B1    1091            mov     (_main_time0_1_34 + 1),dph
+0480 85F0B2    1092            mov     (_main_time0_1_34 + 2),b
+0483 F5B3      1093            mov     (_main_time0_1_34 + 3),a
+0485 E581      1094            mov     a,sp
+0487 24FC      1095            add     a,#0xfc
+0489 F581      1096            mov     sp,a
+048B           1097   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:193: TF0=0; // Clear overflow flag
+048B C28D      1098            clr     _TF0
+048D           1099   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:194: TL0=0; // Reset the timer
+048D 758A00    1100            mov     _TL0,#0x00
+0490           1101   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:195: TH0=0;
+0490 758C00    1102            mov     _TH0,#0x00
+0493           1103   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:197: while (GetADC(3)>2); // Wait for the signal to be zero
+0493           1104   L007023?:
+0493 758203    1105            mov     dpl,#0x03
+0496 120100    1106            lcall   _GetADC
+0499 AA82      1107            mov     r2,dpl
+049B AB83      1108            mov     r3,dph
+049D C3        1109            clr     c
+049E 7402      1110            mov     a,#0x02
+04A0 9A        1111            subb    a,r2
+04A1 E4        1112            clr     a
+04A2 9B        1113            subb    a,r3
+04A3 4001      1114            jc      L007023?
+04A5           1115   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:198: while (GetADC(3)<4); // Wait for the signal to be one
+04A5           1116   L007026?:
+04A5 758203    1117            mov     dpl,#0x03
+04A8 120100    1118            lcall   _GetADC
+04AB AA82      1119            mov     r2,dpl
+04AD AB83      1120            mov     r3,dph
+04AF C3        1121            clr     c
+04B0 EA        1122            mov     a,r2
+04B1 9404      1123            subb    a,#0x04
+04B3 EB        1124            mov     a,r3
+04B4 9400      1125            subb    a,#0x00
+04B6 4001      1126            jc      L007026?
+04B8           1127   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:199: TR0=1; // Start timing
+04B8 D28C      1128            setb    _TR0
+04BA           1129   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:200: while (GetADC(3)>2) // Wait for the signal to be zero   
+04BA 7A00      1130            mov     r2,#0x00
+04BC 7B00      1131            mov     r3,#0x00
+04BE           1132   L007031?:
+04BE 758203    1133            mov     dpl,#0x03
+04C1 C002      1134            push    ar2
+04C3 C003      1135            push    ar3
+04C5 120100    1136            lcall   _GetADC
+04C8 AC82      1137            mov     r4,dpl
+04CA AD83      1138            mov     r5,dph
+04CC D003      1139            pop     ar3
+04CE D002      1140            pop     ar2
+04D0 C3        1141            clr     c
+04D1 7402      1142            mov     a,#0x02
+04D3 9C        1143            subb    a,r4
+04D4 E4        1144            clr     a
+04D5 9D        1145            subb    a,r5
+04D6 5001      1146            jnc     L007033?
+04D8           1147   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:202: if (TF0){
+04D8           1148   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:203: TF0=0;
+04D8 108DF0    1149            jbc     _TF0,L007119?
+04DB 8001      1150            sjmp    L007031?
+04DD           1151   L007119?:
+04DD           1152   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:204: OVcnt1++;
+04DD 0A        1153            inc     r2
+04DE BA0070    1154            cjne    r2,#0x00,L007031?
+04E1 0B        1155            inc     r3
+04E2 8001      1156            sjmp    L007031?
+04E4           1157   L007033?:
+04E4           1158   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:207: TR0=1; // Stop timer 0
+04E4 D28C      1159            setb    _TR0
+04E6           1160   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:209: half_period1=OVcnt1*65536.0+TH0*256.0+TL0; // half_period is a float and is in units of 1/clk. To convert, divide by clk
+04E6 8A82      1161            mov     dpl,r2
+04E8 8B83      1162            mov     dph,r3
+04EA 120100    1163            lcall   ___sint2fs
+04ED AA82      1164            mov     r2,dpl
+04EF AB83      1165            mov     r3,dph
+04F1 ACF0      1166            mov     r4,b
+04F3 FD        1167            mov     r5,a
+04F4 C002      1168            push    ar2
+04F6 C003      1169            push    ar3
+04F8 C004      1170            push    ar4
+04FA C005      1171            push    ar5
+04FC 900000    1172            mov     dptr,#0x0000
+04FF 75F080    1173            mov     b,#0x80
+0502 7447      1174            mov     a,#0x47
+0504 120100    1175            lcall   ___fsmul
+0507 AA82      1176            mov     r2,dpl
+0509 AB83      1177            mov     r3,dph
+050B ACF0      1178            mov     r4,b
+050D FD        1179            mov     r5,a
+050E E581      1180            mov     a,sp
+0510 24FC      1181            add     a,#0xfc
+0512 F581      1182            mov     sp,a
+0514 858C82    1183            mov     dpl,_TH0
+0517 C002      1184            push    ar2
+0519 C003      1185            push    ar3
+051B C004      1186            push    ar4
+051D C005      1187            push    ar5
+051F 120100    1188            lcall   ___uchar2fs
+0522 AE82      1189            mov     r6,dpl
+0524 AF83      1190            mov     r7,dph
+0526 A8F0      1191            mov     r0,b
+0528 F9        1192            mov     r1,a
+0529 C006      1193            push    ar6
+052B C007      1194            push    ar7
+052D C000      1195            push    ar0
+052F C001      1196            push    ar1
+0531 900000    1197            mov     dptr,#0x0000
+0534 75F080    1198            mov     b,#0x80
+0537 7443      1199            mov     a,#0x43
+0539 120100    1200            lcall   ___fsmul
+053C AE82      1201            mov     r6,dpl
+053E AF83      1202            mov     r7,dph
+0540 A8F0      1203            mov     r0,b
+0542 F9        1204            mov     r1,a
+0543 E581      1205            mov     a,sp
+0545 24FC      1206            add     a,#0xfc
+0547 F581      1207            mov     sp,a
+0549 D005      1208            pop     ar5
+054B D004      1209            pop     ar4
+054D D003      1210            pop     ar3
+054F D002      1211            pop     ar2
+0551 C006      1212            push    ar6
+0553 C007      1213            push    ar7
+0555 C000      1214            push    ar0
+0557 C001      1215            push    ar1
+0559 8A82      1216            mov     dpl,r2
+055B 8B83      1217            mov     dph,r3
+055D 8CF0      1218            mov     b,r4
+055F ED        1219            mov     a,r5
+0560 120100    1220            lcall   ___fsadd
+0563 AA82      1221            mov     r2,dpl
+0565 AB83      1222            mov     r3,dph
+0567 ACF0      1223            mov     r4,b
+0569 FD        1224            mov     r5,a
+056A E581      1225            mov     a,sp
+056C 24FC      1226            add     a,#0xfc
+056E F581      1227            mov     sp,a
+0570 AE8A      1228            mov     r6,_TL0
+0572 7F00      1229            mov     r7,#0x00
+0574 8E82      1230            mov     dpl,r6
+0576 8F83      1231            mov     dph,r7
+0578 C002      1232            push    ar2
+057A C003      1233            push    ar3
+057C C004      1234            push    ar4
+057E C005      1235            push    ar5
+0580 120100    1236            lcall   ___sint2fs
+0583 AE82      1237            mov     r6,dpl
+0585 AF83      1238            mov     r7,dph
+0587 A8F0      1239            mov     r0,b
+0589 F9        1240            mov     r1,a
+058A D005      1241            pop     ar5
+058C D004      1242            pop     ar4
+058E D003      1243            pop     ar3
+0590 D002      1244            pop     ar2
+0592 C006      1245            push    ar6
+0594 C007      1246            push    ar7
+0596 C000      1247            push    ar0
+0598 C001      1248            push    ar1
+059A 8A82      1249            mov     dpl,r2
+059C 8B83      1250            mov     dph,r3
+059E 8CF0      1251            mov     b,r4
+05A0 ED        1252            mov     a,r5
+05A1 120100    1253            lcall   ___fsadd
+05A4 858210    1254            mov     _main_half_period1_1_34,dpl
+05A7 858311    1255            mov     (_main_half_period1_1_34 + 1),dph
+05AA 85F012    1256            mov     (_main_half_period1_1_34 + 2),b
+05AD F513      1257            mov     (_main_half_period1_1_34 + 3),a
+05AF E581      1258            mov     a,sp
+05B1 24FC      1259            add     a,#0xfc
+05B3 F581      1260            mov     sp,a
+05B5           1261   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:210: qPeriod1 = half_period1/2.0;
+05B5 E4        1262            clr     a
+05B6 C0E0      1263            push    acc
+05B8 C0E0      1264            push    acc
+05BA C0E0      1265            push    acc
+05BC 7440      1266            mov     a,#0x40
+05BE C0E0      1267            push    acc
+05C0 851082    1268            mov     dpl,_main_half_period1_1_34
+05C3 851183    1269            mov     dph,(_main_half_period1_1_34 + 1)
+05C6 8512F0    1270            mov     b,(_main_half_period1_1_34 + 2)
+05C9 E513      1271            mov     a,(_main_half_period1_1_34 + 3)
+05CB 120100    1272            lcall   ___fsdiv
+05CE 858250    1273            mov     _main_qPeriod1_1_34,dpl
+05D1 858351    1274            mov     (_main_qPeriod1_1_34 + 1),dph
+05D4 85F052    1275            mov     (_main_qPeriod1_1_34 + 2),b
+05D7 F553      1276            mov     (_main_qPeriod1_1_34 + 3),a
+05D9 E581      1277            mov     a,sp
+05DB 24FC      1278            add     a,#0xfc
+05DD F581      1279            mov     sp,a
+05DF           1280   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:211: TR0 = 0;
+05DF C28C      1281            clr     _TR0
+05E1           1282   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:212: TF0 = 0;
+05E1 C28D      1283            clr     _TF0
+05E3           1284   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:213: TL0 = 0;
+05E3 758A00    1285            mov     _TL0,#0x00
+05E6           1286   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:214: TH0 = 0;
+05E6 758C00    1287            mov     _TH0,#0x00
+05E9           1288   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:217: while (GetADC(3)>2); // Wait for the signal to be zero
+05E9           1289   L007034?:
+05E9 758203    1290            mov     dpl,#0x03
+05EC 120100    1291            lcall   _GetADC
+05EF AA82      1292            mov     r2,dpl
+05F1 AB83      1293            mov     r3,dph
+05F3 C3        1294            clr     c
+05F4 7402      1295            mov     a,#0x02
+05F6 9A        1296            subb    a,r2
+05F7 E4        1297            clr     a
+05F8 9B        1298            subb    a,r3
+05F9 4001      1299            jc      L007034?
+05FB           1300   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:218: while (GetADC(3)<4); // Wait for the signal to be one
+05FB           1301   L007037?:
+05FB 758203    1302            mov     dpl,#0x03
+05FE 120100    1303            lcall   _GetADC
+0601 AA82      1304            mov     r2,dpl
+0603 AB83      1305            mov     r3,dph
+0605 C3        1306            clr     c
+0606 EA        1307            mov     a,r2
+0607 9404      1308            subb    a,#0x04
+0609 EB        1309            mov     a,r3
+060A 9400      1310            subb    a,#0x00
+060C 4001      1311            jc      L007037?
+060E           1312   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:219: TR0 = 1;
+060E D28C      1313            setb    _TR0
+0610           1314   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:220: while((OVcnt1*65536.0+TH0*256.0+TL0)<qPeriod1){
+0610 E4        1315            clr     a
+0611 F5F0      1316            mov     _main_OVcnt1_1_34,a
+0613 F5F1      1317            mov     (_main_OVcnt1_1_34 + 1),a
+0615           1318   L007042?:
+0615 85F082    1319            mov     dpl,_main_OVcnt1_1_34
+0618 85F183    1320            mov     dph,(_main_OVcnt1_1_34 + 1)
+061B 120100    1321            lcall   ___sint2fs
+061E AC82      1322            mov     r4,dpl
+0620 AD83      1323            mov     r5,dph
+0622 AEF0      1324            mov     r6,b
+0624 FF        1325            mov     r7,a
+0625 C004      1326            push    ar4
+0627 C005      1327            push    ar5
+0629 C006      1328            push    ar6
+062B C007      1329            push    ar7
+062D 900000    1330            mov     dptr,#0x0000
+0630 75F080    1331            mov     b,#0x80
+0633 7447      1332            mov     a,#0x47
+0635 120100    1333            lcall   ___fsmul
+0638 AC82      1334            mov     r4,dpl
+063A AD83      1335            mov     r5,dph
+063C AEF0      1336            mov     r6,b
+063E FF        1337            mov     r7,a
+063F E581      1338            mov     a,sp
+0641 24FC      1339            add     a,#0xfc
+0643 F581      1340            mov     sp,a
+0645 858C82    1341            mov     dpl,_TH0
+0648 C004      1342            push    ar4
+064A C005      1343            push    ar5
+064C C006      1344            push    ar6
+064E C007      1345            push    ar7
+0650 120100    1346            lcall   ___uchar2fs
+0653 A882      1347            mov     r0,dpl
+0655 A983      1348            mov     r1,dph
+0657 AAF0      1349            mov     r2,b
+0659 FB        1350            mov     r3,a
+065A C000      1351            push    ar0
+065C C001      1352            push    ar1
+065E C002      1353            push    ar2
+0660 C003      1354            push    ar3
+0662 900000    1355            mov     dptr,#0x0000
+0665 75F080    1356            mov     b,#0x80
+0668 7443      1357            mov     a,#0x43
+066A 120100    1358            lcall   ___fsmul
+066D AA82      1359            mov     r2,dpl
+066F AB83      1360            mov     r3,dph
+0671 A8F0      1361            mov     r0,b
+0673 F9        1362            mov     r1,a
+0674 E581      1363            mov     a,sp
+0676 24FC      1364            add     a,#0xfc
+0678 F581      1365            mov     sp,a
+067A D007      1366            pop     ar7
+067C D006      1367            pop     ar6
+067E D005      1368            pop     ar5
+0680 D004      1369            pop     ar4
+0682 C002      1370            push    ar2
+0684 C003      1371            push    ar3
+0686 C000      1372            push    ar0
+0688 C001      1373            push    ar1
+068A 8C82      1374            mov     dpl,r4
+068C 8D83      1375            mov     dph,r5
+068E 8EF0      1376            mov     b,r6
+0690 EF        1377            mov     a,r7
+0691 120100    1378            lcall   ___fsadd
+0694 AA82      1379            mov     r2,dpl
+0696 AB83      1380            mov     r3,dph
+0698 ACF0      1381            mov     r4,b
+069A FD        1382            mov     r5,a
+069B E581      1383            mov     a,sp
+069D 24FC      1384            add     a,#0xfc
+069F F581      1385            mov     sp,a
+06A1 AE8A      1386            mov     r6,_TL0
+06A3 7F00      1387            mov     r7,#0x00
+06A5 8E82      1388            mov     dpl,r6
+06A7 8F83      1389            mov     dph,r7
+06A9 C002      1390            push    ar2
+06AB C003      1391            push    ar3
+06AD C004      1392            push    ar4
+06AF C005      1393            push    ar5
+06B1 120100    1394            lcall   ___sint2fs
+06B4 AE82      1395            mov     r6,dpl
+06B6 AF83      1396            mov     r7,dph
+06B8 A8F0      1397            mov     r0,b
+06BA F9        1398            mov     r1,a
+06BB D005      1399            pop     ar5
+06BD D004      1400            pop     ar4
+06BF D003      1401            pop     ar3
+06C1 D002      1402            pop     ar2
+06C3 C006      1403            push    ar6
+06C5 C007      1404            push    ar7
+06C7 C000      1405            push    ar0
+06C9 C001      1406            push    ar1
+06CB 8A82      1407            mov     dpl,r2
+06CD 8B83      1408            mov     dph,r3
+06CF 8CF0      1409            mov     b,r4
+06D1 ED        1410            mov     a,r5
+06D2 120100    1411            lcall   ___fsadd
+06D5 AA82      1412            mov     r2,dpl
+06D7 AB83      1413            mov     r3,dph
+06D9 ACF0      1414            mov     r4,b
+06DB FD        1415            mov     r5,a
+06DC E581      1416            mov     a,sp
+06DE 24FC      1417            add     a,#0xfc
+06E0 F581      1418            mov     sp,a
+06E2 C050      1419            push    _main_qPeriod1_1_34
+06E4 C051      1420            push    (_main_qPeriod1_1_34 + 1)
+06E6 C052      1421            push    (_main_qPeriod1_1_34 + 2)
+06E8 C053      1422            push    (_main_qPeriod1_1_34 + 3)
+06EA 8A82      1423            mov     dpl,r2
+06EC 8B83      1424            mov     dph,r3
+06EE 8CF0      1425            mov     b,r4
+06F0 ED        1426            mov     a,r5
+06F1 120100    1427            lcall   ___fslt
+06F4 AA82      1428            mov     r2,dpl
+06F6 E581      1429            mov     a,sp
+06F8 24FC      1430            add     a,#0xfc
+06FA F581      1431            mov     sp,a
+06FC EA        1432            mov     a,r2
+06FD 6001      1433            jz      L007044?
+06FF           1434   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:221: if (TF0){
+06FF           1435   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:222: TF0=0;
+06FF 108D30    1436            jbc     _TF0,L007124?
+0702 020100    1437            ljmp    L007042?
+0705           1438   L007124?:
+0705           1439   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:223: OVcnt1++;                 
+0705 05F0      1440            inc     _main_OVcnt1_1_34
+0707 E4        1441            clr     a
+0708 B5F070    1442            cjne    a,_main_OVcnt1_1_34,L007125?
+070B 05F1      1443            inc     (_main_OVcnt1_1_34 + 1)
+070D           1444   L007125?:
+070D 020100    1445            ljmp    L007042?
+0710           1446   L007044?:
+0710           1447   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:226: TR0 = 0;
+0710 C28C      1448            clr     _TR0
+0712           1449   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:228: pVolt1=(GetADC(3)*VREF)/1023.0; //converting adc value into voltage
+0712 758203    1450            mov     dpl,#0x03
+0715 120100    1451            lcall   _GetADC
+0718 120100    1452            lcall   ___uint2fs
+071B AA82      1453            mov     r2,dpl
+071D AB83      1454            mov     r3,dph
+071F ACF0      1455            mov     r4,b
+0721 FD        1456            mov     r5,a
+0722 C002      1457            push    ar2
+0724 C003      1458            push    ar3
+0726 C004      1459            push    ar4
+0728 C005      1460            push    ar5
+072A 90126F    1461            mov     dptr,#0x126F
+072D 75F083    1462            mov     b,#0x83
+0730 7440      1463            mov     a,#0x40
+0732 120100    1464            lcall   ___fsmul
+0735 AA82      1465            mov     r2,dpl
+0737 AB83      1466            mov     r3,dph
+0739 ACF0      1467            mov     r4,b
+073B FD        1468            mov     r5,a
+073C E581      1469            mov     a,sp
+073E 24FC      1470            add     a,#0xfc
+0740 F581      1471            mov     sp,a
+0742 E4        1472            clr     a
+0743 C0E0      1473            push    acc
+0745 74C0      1474            mov     a,#0xC0
+0747 C0E0      1475            push    acc
+0749 747F      1476            mov     a,#0x7F
+074B C0E0      1477            push    acc
+074D 7444      1478            mov     a,#0x44
+074F C0E0      1479            push    acc
+0751 8A82      1480            mov     dpl,r2
+0753 8B83      1481            mov     dph,r3
+0755 8CF0      1482            mov     b,r4
+0757 ED        1483            mov     a,r5
+0758 120100    1484            lcall   ___fsdiv
+075B 858290    1485            mov     _main_pVolt1_1_34,dpl
+075E 858391    1486            mov     (_main_pVolt1_1_34 + 1),dph
+0761 85F092    1487            mov     (_main_pVolt1_1_34 + 2),b
+0764 F593      1488            mov     (_main_pVolt1_1_34 + 3),a
+0766 E581      1489            mov     a,sp
+0768 24FC      1490            add     a,#0xfc
+076A F581      1491            mov     sp,a
+076C           1492   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:229: time1 = (half_period1/22118.400)*2.0; //period in milliseconds  
+076C 74CD      1493            mov     a,#0xCD
+076E C0E0      1494            push    acc
+0770 74CC      1495            mov     a,#0xCC
+0772 C0E0      1496            push    acc
+0774 74AC      1497            mov     a,#0xAC
+0776 C0E0      1498            push    acc
+0778 7446      1499            mov     a,#0x46
+077A C0E0      1500            push    acc
+077C 851082    1501            mov     dpl,_main_half_period1_1_34
+077F 851183    1502            mov     dph,(_main_half_period1_1_34 + 1)
+0782 8512F0    1503            mov     b,(_main_half_period1_1_34 + 2)
+0785 E513      1504            mov     a,(_main_half_period1_1_34 + 3)
+0787 120100    1505            lcall   ___fsdiv
+078A AE82      1506            mov     r6,dpl
+078C AF83      1507            mov     r7,dph
+078E A8F0      1508            mov     r0,b
+0790 F9        1509            mov     r1,a
+0791 E581      1510            mov     a,sp
+0793 24FC      1511            add     a,#0xfc
+0795 F581      1512            mov     sp,a
+0797 C006      1513            push    ar6
+0799 C007      1514            push    ar7
+079B C000      1515            push    ar0
+079D C001      1516            push    ar1
+079F 900000    1517            mov     dptr,#(0x00&0x00ff)
+07A2 E4        1518            clr     a
+07A3 F5F0      1519            mov     b,a
+07A5 7440      1520            mov     a,#0x40
+07A7 120100    1521            lcall   ___fsmul
+07AA 858200    1522            mov     _main_time1_1_34,dpl
+07AD 858301    1523            mov     (_main_time1_1_34 + 1),dph
+07B0 85F002    1524            mov     (_main_time1_1_34 + 2),b
+07B3 F503      1525            mov     (_main_time1_1_34 + 3),a
+07B5 E581      1526            mov     a,sp
+07B7 24FC      1527            add     a,#0xfc
+07B9 F581      1528            mov     sp,a
+07BB           1529   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:231: TF0=0; // Clear overflow flag
+07BB C28D      1530            clr     _TF0
+07BD           1531   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:232: TL0=0; // Reset the timer
+07BD 758A00    1532            mov     _TL0,#0x00
+07C0           1533   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:233: TH0=0;
+07C0 758C00    1534            mov     _TH0,#0x00
+07C3           1535   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:235: while (GetADC(0)>2); // Wait for the signal to be zero
+07C3           1536   L007045?:
+07C3 758200    1537            mov     dpl,#0x00
+07C6 120100    1538            lcall   _GetADC
+07C9 AE82      1539            mov     r6,dpl
+07CB AF83      1540            mov     r7,dph
+07CD C3        1541            clr     c
+07CE 7402      1542            mov     a,#0x02
+07D0 9E        1543            subb    a,r6
+07D1 E4        1544            clr     a
+07D2 9F        1545            subb    a,r7
+07D3 4001      1546            jc      L007045?
+07D5           1547   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:236: while (GetADC(0)<4); // Wait for the signal to be one
+07D5           1548   L007048?:
+07D5 758200    1549            mov     dpl,#0x00
+07D8 120100    1550            lcall   _GetADC
+07DB AE82      1551            mov     r6,dpl
+07DD AF83      1552            mov     r7,dph
+07DF C3        1553            clr     c
+07E0 EE        1554            mov     a,r6
+07E1 9404      1555            subb    a,#0x04
+07E3 EF        1556            mov     a,r7
+07E4 9400      1557            subb    a,#0x00
+07E6 4001      1558            jc      L007048?
+07E8           1559   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:237: TR0=1; // Start timing
+07E8 D28C      1560            setb    _TR0
+07EA           1561   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:239: while (GetADC(3)>2){  //times while signal is above zero
+07EA 7E00      1562            mov     r6,#0x00
+07EC 7F00      1563            mov     r7,#0x00
+07EE           1564   L007053?:
+07EE 758203    1565            mov     dpl,#0x03
+07F1 C006      1566            push    ar6
+07F3 C007      1567            push    ar7
+07F5 120100    1568            lcall   _GetADC
+07F8 A882      1569            mov     r0,dpl
+07FA A983      1570            mov     r1,dph
+07FC D007      1571            pop     ar7
+07FE D006      1572            pop     ar6
+0800 C3        1573            clr     c
+0801 7402      1574            mov     a,#0x02
+0803 98        1575            subb    a,r0
+0804 E4        1576            clr     a
+0805 99        1577            subb    a,r1
+0806 5001      1578            jnc     L007097?
+0808           1579   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:240: if (TF0){
+0808           1580   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:241: TF0=0;
+0808 108DB0    1581            jbc     _TF0,L007129?
+080B 8001      1582            sjmp    L007053?
+080D           1583   L007129?:
+080D           1584   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:242: OVcnt++;
+080D 0E        1585            inc     r6
+080E           1586   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:245: while (GetADC(3)<4){ // continues timing until signal reaches zero cross
+080E BE0030    1587            cjne    r6,#0x00,L007053?
+0811 0F        1588            inc     r7
+0812 8001      1589            sjmp    L007053?
+0814           1590   L007097?:
+0814           1591   L007058?:
+0814 758203    1592            mov     dpl,#0x03
+0817 C006      1593            push    ar6
+0819 C007      1594            push    ar7
+081B 120100    1595            lcall   _GetADC
+081E A882      1596            mov     r0,dpl
+0820 A983      1597            mov     r1,dph
+0822 D007      1598            pop     ar7
+0824 D006      1599            pop     ar6
+0826 C3        1600            clr     c
+0827 E8        1601            mov     a,r0
+0828 9404      1602            subb    a,#0x04
+082A E9        1603            mov     a,r1
+082B 9400      1604            subb    a,#0x00
+082D 5001      1605            jnc     L007060?
+082F           1606   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:246: if (TF0){
+082F           1607   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:247: TF0=0;
+082F 108D70    1608            jbc     _TF0,L007132?
+0832 8001      1609            sjmp    L007058?
+0834           1610   L007132?:
+0834           1611   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:248: OVcnt++;
+0834 0E        1612            inc     r6
+0835 BE00F0    1613            cjne    r6,#0x00,L007058?
+0838 0F        1614            inc     r7
+0839 8001      1615            sjmp    L007058?
+083B           1616   L007060?:
+083B           1617   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:251: TR0=0; // Stop timer 0
+083B C28C      1618            clr     _TR0
+083D           1619   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:253: timeDiff=OVcnt*65536.0+TH0*256.0+TL0; // getting value of time right at the other zero cross                      units of 1/clk
+083D 8E82      1620            mov     dpl,r6
+083F 8F83      1621            mov     dph,r7
+0841 120100    1622            lcall   ___sint2fs
+0844 AE82      1623            mov     r6,dpl
+0846 AF83      1624            mov     r7,dph
+0848 A8F0      1625            mov     r0,b
+084A F9        1626            mov     r1,a
+084B C006      1627            push    ar6
+084D C007      1628            push    ar7
+084F C000      1629            push    ar0
+0851 C001      1630            push    ar1
+0853 900000    1631            mov     dptr,#0x0000
+0856 75F080    1632            mov     b,#0x80
+0859 7447      1633            mov     a,#0x47
+085B 120100    1634            lcall   ___fsmul
+085E AE82      1635            mov     r6,dpl
+0860 AF83      1636            mov     r7,dph
+0862 A8F0      1637            mov     r0,b
+0864 F9        1638            mov     r1,a
+0865 E581      1639            mov     a,sp
+0867 24FC      1640            add     a,#0xfc
+0869 F581      1641            mov     sp,a
+086B 858C82    1642            mov     dpl,_TH0
+086E C006      1643            push    ar6
+0870 C007      1644            push    ar7
+0872 C000      1645            push    ar0
+0874 C001      1646            push    ar1
+0876 120100    1647            lcall   ___uchar2fs
+0879 AA82      1648            mov     r2,dpl
+087B AB83      1649            mov     r3,dph
+087D ACF0      1650            mov     r4,b
+087F FD        1651            mov     r5,a
+0880 C002      1652            push    ar2
+0882 C003      1653            push    ar3
+0884 C004      1654            push    ar4
+0886 C005      1655            push    ar5
+0888 900000    1656            mov     dptr,#0x0000
+088B 75F080    1657            mov     b,#0x80
+088E 7443      1658            mov     a,#0x43
+0890 120100    1659            lcall   ___fsmul
+0893 AA82      1660            mov     r2,dpl
+0895 AB83      1661            mov     r3,dph
+0897 ACF0      1662            mov     r4,b
+0899 FD        1663            mov     r5,a
+089A E581      1664            mov     a,sp
+089C 24FC      1665            add     a,#0xfc
+089E F581      1666            mov     sp,a
+08A0 D001      1667            pop     ar1
+08A2 D000      1668            pop     ar0
+08A4 D007      1669            pop     ar7
+08A6 D006      1670            pop     ar6
+08A8 C002      1671            push    ar2
+08AA C003      1672            push    ar3
+08AC C004      1673            push    ar4
+08AE C005      1674            push    ar5
+08B0 8E82      1675            mov     dpl,r6
+08B2 8F83      1676            mov     dph,r7
+08B4 88F0      1677            mov     b,r0
+08B6 E9        1678            mov     a,r1
+08B7 120100    1679            lcall   ___fsadd
+08BA AA82      1680            mov     r2,dpl
+08BC AB83      1681            mov     r3,dph
+08BE ACF0      1682            mov     r4,b
+08C0 FD        1683            mov     r5,a
+08C1 E581      1684            mov     a,sp
+08C3 24FC      1685            add     a,#0xfc
+08C5 F581      1686            mov     sp,a
+08C7 AE8A      1687            mov     r6,_TL0
+08C9 7F00      1688            mov     r7,#0x00
+08CB 8E82      1689            mov     dpl,r6
+08CD 8F83      1690            mov     dph,r7
+08CF C002      1691            push    ar2
+08D1 C003      1692            push    ar3
+08D3 C004      1693            push    ar4
+08D5 C005      1694            push    ar5
+08D7 120100    1695            lcall   ___sint2fs
+08DA AE82      1696            mov     r6,dpl
+08DC AF83      1697            mov     r7,dph
+08DE A8F0      1698            mov     r0,b
+08E0 F9        1699            mov     r1,a
+08E1 D005      1700            pop     ar5
+08E3 D004      1701            pop     ar4
+08E5 D003      1702            pop     ar3
+08E7 D002      1703            pop     ar2
+08E9 C006      1704            push    ar6
+08EB C007      1705            push    ar7
+08ED C000      1706            push    ar0
+08EF C001      1707            push    ar1
+08F1 8A82      1708            mov     dpl,r2
+08F3 8B83      1709            mov     dph,r3
+08F5 8CF0      1710            mov     b,r4
+08F7 ED        1711            mov     a,r5
+08F8 120100    1712            lcall   ___fsadd
+08FB AA82      1713            mov     r2,dpl
+08FD AB83      1714            mov     r3,dph
+08FF ACF0      1715            mov     r4,b
+0901 FD        1716            mov     r5,a
+0902 E581      1717            mov     a,sp
+0904 24FC      1718            add     a,#0xfc
+0906 F581      1719            mov     sp,a
+0908           1720   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:255: timeDiffsec = (timeDiff/22118.400); //now the time difference is in milliseconds 
+0908 74CD      1721            mov     a,#0xCD
+090A C0E0      1722            push    acc
+090C 74CC      1723            mov     a,#0xCC
+090E C0E0      1724            push    acc
+0910 74AC      1725            mov     a,#0xAC
+0912 C0E0      1726            push    acc
+0914 7446      1727            mov     a,#0x46
+0916 C0E0      1728            push    acc
+0918 8A82      1729            mov     dpl,r2
+091A 8B83      1730            mov     dph,r3
+091C 8CF0      1731            mov     b,r4
+091E ED        1732            mov     a,r5
+091F 120100    1733            lcall   ___fsdiv
+0922 AA82      1734            mov     r2,dpl
+0924 AB83      1735            mov     r3,dph
+0926 ACF0      1736            mov     r4,b
+0928 FD        1737            mov     r5,a
+0929 E581      1738            mov     a,sp
+092B 24FC      1739            add     a,#0xfc
+092D F581      1740            mov     sp,a
+092F           1741   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:257: phase = timeDiffsec*(360.0/time0); //phase in degrees 
+092F C002      1742            push    ar2
+0931 C003      1743            push    ar3
+0933 C004      1744            push    ar4
+0935 C005      1745            push    ar5
+0937 C0B0      1746            push    _main_time0_1_34
+0939 C0B1      1747            push    (_main_time0_1_34 + 1)
+093B C0B2      1748            push    (_main_time0_1_34 + 2)
+093D C0B3      1749            push    (_main_time0_1_34 + 3)
+093F 900000    1750            mov     dptr,#0x0000
+0942 75F0B4    1751            mov     b,#0xB4
+0945 7443      1752            mov     a,#0x43
+0947 120100    1753            lcall   ___fsdiv
+094A AE82      1754            mov     r6,dpl
+094C AF83      1755            mov     r7,dph
+094E A8F0      1756            mov     r0,b
+0950 F9        1757            mov     r1,a
+0951 E581      1758            mov     a,sp
+0953 24FC      1759            add     a,#0xfc
+0955 F581      1760            mov     sp,a
+0957 D005      1761            pop     ar5
+0959 D004      1762            pop     ar4
+095B D003      1763            pop     ar3
+095D D002      1764            pop     ar2
+095F C006      1765            push    ar6
+0961 C007      1766            push    ar7
+0963 C000      1767            push    ar0
+0965 C001      1768            push    ar1
+0967 8A82      1769            mov     dpl,r2
+0969 8B83      1770            mov     dph,r3
+096B 8CF0      1771            mov     b,r4
+096D ED        1772            mov     a,r5
+096E 120100    1773            lcall   ___fsmul
+0971 AA82      1774            mov     r2,dpl
+0973 AB83      1775            mov     r3,dph
+0975 ACF0      1776            mov     r4,b
+0977 FD        1777            mov     r5,a
+0978 E581      1778            mov     a,sp
+097A 24FC      1779            add     a,#0xfc
+097C F581      1780            mov     sp,a
+097E           1781   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:259: pVolt0rms = pVolt0/1.41421356237; //finding rms 
+097E C002      1782            push    ar2
+0980 C003      1783            push    ar3
+0982 C004      1784            push    ar4
+0984 C005      1785            push    ar5
+0986 74F3      1786            mov     a,#0xF3
+0988 C0E0      1787            push    acc
+098A 7404      1788            mov     a,#0x04
+098C C0E0      1789            push    acc
+098E 74B5      1790            mov     a,#0xB5
+0990 C0E0      1791            push    acc
+0992 743F      1792            mov     a,#0x3F
+0994 C0E0      1793            push    acc
+0996 854082    1794            mov     dpl,_main_pVolt0_1_34
+0999 854183    1795            mov     dph,(_main_pVolt0_1_34 + 1)
+099C 8542F0    1796            mov     b,(_main_pVolt0_1_34 + 2)
+099F E543      1797            mov     a,(_main_pVolt0_1_34 + 3)
+09A1 120100    1798            lcall   ___fsdiv
+09A4 8582E0    1799            mov     _main_pVolt0rms_1_34,dpl
+09A7 8583E1    1800            mov     (_main_pVolt0rms_1_34 + 1),dph
+09AA 85F0E2    1801            mov     (_main_pVolt0rms_1_34 + 2),b
+09AD F5E3      1802            mov     (_main_pVolt0rms_1_34 + 3),a
+09AF E581      1803            mov     a,sp
+09B1 24FC      1804            add     a,#0xfc
+09B3 F581      1805            mov     sp,a
+09B5           1806   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:260: pVolt1rms = pVolt1/1.41421356237;
+09B5 74F3      1807            mov     a,#0xF3
+09B7 C0E0      1808            push    acc
+09B9 7404      1809            mov     a,#0x04
+09BB C0E0      1810            push    acc
+09BD 74B5      1811            mov     a,#0xB5
+09BF C0E0      1812            push    acc
+09C1 743F      1813            mov     a,#0x3F
+09C3 C0E0      1814            push    acc
+09C5 859082    1815            mov     dpl,_main_pVolt1_1_34
+09C8 859183    1816            mov     dph,(_main_pVolt1_1_34 + 1)
+09CB 8592F0    1817            mov     b,(_main_pVolt1_1_34 + 2)
+09CE E593      1818            mov     a,(_main_pVolt1_1_34 + 3)
+09D0 120100    1819            lcall   ___fsdiv
+09D3 AE82      1820            mov     r6,dpl
+09D5 AF83      1821            mov     r7,dph
+09D7 A8F0      1822            mov     r0,b
+09D9 F9        1823            mov     r1,a
+09DA E581      1824            mov     a,sp
+09DC 24FC      1825            add     a,#0xfc
+09DE F581      1826            mov     sp,a
+09E0           1827   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:262: printf("channel 0 period(ms):%5.3f\n", time0);
+09E0 C006      1828            push    ar6
+09E2 C007      1829            push    ar7
+09E4 C000      1830            push    ar0
+09E6 C001      1831            push    ar1
+09E8 C0B0      1832            push    _main_time0_1_34
+09EA C0B1      1833            push    (_main_time0_1_34 + 1)
+09EC C0B2      1834            push    (_main_time0_1_34 + 2)
+09EE C0B3      1835            push    (_main_time0_1_34 + 3)
+09F0 74B0      1836            mov     a,#__str_0
+09F2 C0E0      1837            push    acc
+09F4 748E      1838            mov     a,#(__str_0 >> 8)
+09F6 C0E0      1839            push    acc
+09F8 7480      1840            mov     a,#0x80
+09FA C0E0      1841            push    acc
+09FC 120100    1842            lcall   _printf
+09FF E581      1843            mov     a,sp
+0A01 24F9      1844            add     a,#0xf9
+0A03 F581      1845            mov     sp,a
+0A05           1846   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:263: printf("channel 0 voltage(rms):%f\n", pVolt0rms);
+0A05 C0E0      1847            push    _main_pVolt0rms_1_34
+0A07 C0E1      1848            push    (_main_pVolt0rms_1_34 + 1)
+0A09 C0E2      1849            push    (_main_pVolt0rms_1_34 + 2)
+0A0B C0E3      1850            push    (_main_pVolt0rms_1_34 + 3)
+0A0D 7430      1851            mov     a,#__str_1
+0A0F C0E0      1852            push    acc
+0A11 748F      1853            mov     a,#(__str_1 >> 8)
+0A13 C0E0      1854            push    acc
+0A15 7480      1855            mov     a,#0x80
+0A17 C0E0      1856            push    acc
+0A19 120100    1857            lcall   _printf
+0A1C E581      1858            mov     a,sp
+0A1E 24F9      1859            add     a,#0xf9
+0A20 F581      1860            mov     sp,a
+0A22           1861   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:264: printf("channel 3 period(ms):%5.3f\n", time1);
+0A22 C000      1862            push    _main_time1_1_34
+0A24 C001      1863            push    (_main_time1_1_34 + 1)
+0A26 C002      1864            push    (_main_time1_1_34 + 2)
+0A28 C003      1865            push    (_main_time1_1_34 + 3)
+0A2A 7470      1866            mov     a,#__str_2
+0A2C C0E0      1867            push    acc
+0A2E 748F      1868            mov     a,#(__str_2 >> 8)
+0A30 C0E0      1869            push    acc
+0A32 7480      1870            mov     a,#0x80
+0A34 C0E0      1871            push    acc
+0A36 120100    1872            lcall   _printf
+0A39 E581      1873            mov     a,sp
+0A3B 24F9      1874            add     a,#0xf9
+0A3D F581      1875            mov     sp,a
+0A3F           1876   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:265: printf("channel 3 voltage(rms):%f\n", pVolt1rms);
+0A3F 74B0      1877            mov     a,#__str_3
+0A41 C0E0      1878            push    acc
+0A43 748F      1879            mov     a,#(__str_3 >> 8)
+0A45 C0E0      1880            push    acc
+0A47 7480      1881            mov     a,#0x80
+0A49 C0E0      1882            push    acc
+0A4B 120100    1883            lcall   _printf
+0A4E E581      1884            mov     a,sp
+0A50 24F9      1885            add     a,#0xf9
+0A52 F581      1886            mov     sp,a
+0A54           1887   ;        C:\Users\mtale\Desktop\ELEC291\Lab_5\lab5backup1period.c:266: printf("phase (degrees): %f\n",phase);
+0A54 74F0      1888            mov     a,#__str_4
+0A56 C0E0      1889            push    acc
+0A58 748F      1890            mov     a,#(__str_4 >> 8)
+0A5A C0E0      1891            push    acc
+0A5C 7480      1892            mov     a,#0x80
+0A5E C0E0      1893            push    acc
+0A60 120100    1894            lcall   _printf
+0A63 E581      1895            mov     a,sp
+0A65 24F9      1896            add     a,#0xf9
+0A67 F581      1897            mov     sp,a
+0A69 020100    1898            ljmp    L007062?
+0A6C           1899            rseg R_CSEG
+0A6C           1900   
+0000           1901            rseg R_XINIT
+0000           1902   
+0000           1903            rseg R_CONST
+0000           1904   __str_0:
+0000 6368616E  1905            db 'channel 0 period(ms):%5.3f'
+     6E656C20
+     30207065
+     72696F64
+     286D7329
+     3A25352E
+     3366
+001A 0A        1906            db 0x0A
+001B 00        1907            db 0x00
+001C           1908   __str_1:
+001C 6368616E  1909            db 'channel 0 voltage(rms):%f'
+     6E656C20
+     3020766F
+     6C746167
+     6528726D
+     73293A25
+     66
+0035 0A        1910            db 0x0A
+0036 00        1911            db 0x00
+0037           1912   __str_2:
+0037 6368616E  1913            db 'channel 3 period(ms):%5.3f'
+     6E656C20
+     33207065
+     72696F64
+     286D7329
+     3A25352E
+     3366
+0051 0A        1914            db 0x0A
+0052 00        1915            db 0x00
+0053           1916   __str_3:
+0053 6368616E  1917            db 'channel 3 voltage(rms):%f'
+     6E656C20
+     3320766F
+     6C746167
+     6528726D
+     73293A25
+     66
+006C 0A        1918            db 0x0A
+006D 00        1919            db 0x00
+006E           1920   __str_4:
+006E 70686173  1921            db 'phase (degrees): %f'
+     65202864
+     65677265
+     6573293A
+     202566
+0081 0A        1922            db 0x0A
+0082 00        1923            db 0x00
+0083           1924   
+0003           1925            CSEG
+0003           1926   
+0003           1927   end

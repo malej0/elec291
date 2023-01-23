@@ -1,0 +1,242 @@
+                  2   $LIST
+0000              4   
+0000              5   org 0000H
+0000 020428       6      ljmp MyProgram
+0003              7      
+0003              8   ; Timer/Counter 2 overflow interrupt vector
+002B              9   org 0x002B
+002B 020410      10            ljmp Timer2_ISR
+002E             11   
+002E             12   ; These register definitions needed by 'math32.inc'
+0030             13   DSEG at 30H
+0030             14   x:   ds 4
+0034             15   y:   ds 4
+0038             16   bcd: ds 5
+003D             17   T2ov: ds 2 ; 16-bit timer 2 overflow (to measure the period of very slow signals)
+003F             18   
+0000             19   BSEG
+0000             20   mf: dbit 1
+0001             21   
+                570   $LIST
+                 23   $LIST
+02C4             25   
+02C4             26   cseg
+02C4             27   ; These 'equ' must match the hardware wiring
+02C4             28   LCD_RS equ P3.2
+02C4             29   ;LCD_RW equ PX.X ; Not used in this code, connect the pin to GND
+02C4             30   LCD_E  equ P3.3
+02C4             31   LCD_D4 equ P3.4
+02C4             32   LCD_D5 equ P3.5
+02C4             33   LCD_D6 equ P3.6
+02C4             34   LCD_D7 equ P3.7
+02C4             35   
+                 37   	$LIST
+038B             39   
+038B             40   ;                     1234567890123456    <- This helps determine the location of the counter
+038B 43617061    41   Initial_Message:  db 'Capacitance(uF):   ', 0
+     63697461
+     6E636528
+     7546293A
+     20202000
+039F 4F75746F    42   No_Signal_Str:    db 'OutofRange       ', 0
+     6652616E
+     67652020
+     20202020
+     2000
+03B1 2E202020    43   dpoint:            db '.               ', 0
+     20202020
+     20202020
+     20202020
+     00
+03C2             44   
+03C2             45   ; Sends 10-digit BCD number in bcd to the LCD
+03C2             46   Display_10_digit_BCD:
+03C2             47            ;Display_BCD(bcd+4)
+03C2             48            ;Display_BCD(bcd+3)
+03C2 C000        49            push ar0
+03C4 A83A        49            mov r0, bcd+2
+03C6 120375      49            lcall ?Display_BCD
+03C9 D000        49            pop ar0
+03CB C000        50            push ar0
+03CD A839        50            mov r0, bcd+1
+03CF 120375      50            lcall ?Display_BCD
+03D2 D000        50            pop ar0
+03D4 C0E0        51            push acc
+03D6 740E        51            mov a, #14
+03D8 14          51            dec a
+03D9 120353      51            lcall ?Set_Cursor_2 ; Select column and row
+03DC D0E0        51            pop acc
+03DE C083        52            push dph
+03E0 C082        52            push dpl
+03E2 C0E0        52            push acc
+03E4 9003B1      52            mov dptr, #dpoint
+03E7 120348      52            lcall ?Send_Constant_String
+03EA D0E0        52            pop acc
+03EC D082        52            pop dpl
+03EE D083        52            pop dph
+03F0 C0E0        53            push acc
+03F2 740F        53            mov a, #15
+03F4 14          53            dec a
+03F5 120353      53            lcall ?Set_Cursor_2 ; Select column and row
+03F8 D0E0        53            pop acc
+03FA C000        54            push ar0
+03FC A838        54            mov r0, bcd+0
+03FE 120375      54            lcall ?Display_BCD
+0401 D000        54            pop ar0
+0403 22          55            ret
+0404             56   
+0404             57   ;Initializes timer/counter 2 as a 16-bit timer
+0404             58   InitTimer2:
+0404 75C800      59            mov T2CON, #0 ; Stop timer/counter.  Set as timer (clock input is pin 22.1184MHz).
+0407             60            ; Set the reload value on overflow to zero (just in case is not zero)
+0407 75CB00      61            mov RCAP2H, #0
+040A 75CA00      62            mov RCAP2L, #0
+040D D2AD        63            setb ET2
+040F 22          64       ret
+0410             65   
+0410             66   Timer2_ISR:
+0410 C2CF        67            clr TF2  ; Timer 2 doesn't clear TF2 automatically. Do it in ISR
+0412 C0E0        68            push acc
+0414 053D        69            inc T2ov+0
+0416 E53D        70            mov a, T2ov+0
+0418 7002        71            jnz Timer2_ISR_done
+041A 053E        72            inc T2ov+1
+041C             73   Timer2_ISR_done:
+041C D0E0        74            pop acc
+041E 32          75            reti
+041F             76   
+041F             77   ;---------------------------------;
+041F             78   ; Hardware initialization         ;
+041F             79   ;---------------------------------;
+041F             80   Initialize_All:
+041F 120404      81       lcall InitTimer2
+0422 12031E      82       lcall LCD_4BIT ; Initialize LCD
+0425 D2AF        83       setb EA
+0427 22          84            ret
+0428             85   
+0428             86   ;---------------------------------;
+0428             87   ; Main program loop               ;
+0428             88   ;---------------------------------;
+0428             89   MyProgram:
+0428             90       ; Initialize the hardware:
+0428 75817F      91       mov SP, #7FH
+042B 12041F      92       lcall Initialize_All
+042E D2A0        93       setb P2.0 ; Pin is used as input
+0430             94   
+0430 C0E0        95            push acc
+0432 7401        95            mov a, #1
+0434 14          95            dec a
+0435 120355      95            lcall ?Set_Cursor_1 ; Select column and row
+0438 D0E0        95            pop acc
+043A C083        96            push dph
+043C C082        96            push dpl
+043E C0E0        96            push acc
+0440 90038B      96            mov dptr, #Initial_Message
+0443 120348      96            lcall ?Send_Constant_String
+0446 D0E0        96            pop acc
+0448 D082        96            pop dpl
+044A D083        96            pop dph
+044C             97       
+044C             98   forever:
+044C             99       ; synchronize with rising edge of the signal applied to pin P0.0
+044C C2CA       100       clr TR2 ; Stop timer 2
+044E 75CC00     101       mov TL2, #0
+0451 75CD00     102       mov TH2, #0
+0454 753D00     103       mov T2ov+0, #0
+0457 753E00     104       mov T2ov+1, #0
+045A C2CF       105       clr TF2
+045C D2CA       106       setb TR2
+045E            107   synch1:
+045E E53E       108            mov a, T2ov+1
+0460 54FE       109            anl a, #0xfe
+0462 7034       110            jnz no_signal ; If the count is larger than 0x01ffffffff*45ns=1.16s, we assume there is no signal
+0464 20A0F7     111       jb P2.0, synch1
+0467            112   synch2:    
+0467 E53E       113            mov a, T2ov+1
+0469 54FE       114            anl a, #0xfe
+046B 702B       115            jnz no_signal
+046D 30A0F7     116       jnb P2.0, synch2
+0470            117       
+0470            118       ; Measure the period of the signal applied to pin P0.0
+0470 C2CA       119       clr TR2
+0472 75CC00     120       mov TL2, #0
+0475 75CD00     121       mov TH2, #0
+0478 753D00     122       mov T2ov+0, #0
+047B 753E00     123       mov T2ov+1, #0
+047E C2CF       124       clr TF2
+0480 D2CA       125       setb TR2 ; Start timer 2
+0482            126   measure1:
+0482 E53E       127            mov a, T2ov+1
+0484 54FE       128            anl a, #0xfe
+0486 7010       129            jnz no_signal 
+0488 20A0F7     130       jb P2.0, measure1
+048B            131   measure2:    
+048B E53E       132            mov a, T2ov+1
+048D 54FE       133            anl a, #0xfe
+048F 7007       134            jnz no_signal
+0491 30A0F7     135       jnb P2.0, measure2
+0494 C2CA       136       clr TR2 ; Stop timer 2, [T2ov+1, T2ov+0, TH2, TL2] * 45.21123ns is the period
+0496 801F       137            sjmp skip_this
+0498            138   no_signal:       
+0498 C0E0       139            push acc
+049A 7401       139            mov a, #1
+049C 14         139            dec a
+049D 120353     139            lcall ?Set_Cursor_2 ; Select column and row
+04A0 D0E0       139            pop acc
+04A2 C083       140            push dph
+04A4 C082       140            push dpl
+04A6 C0E0       140            push acc
+04A8 90039F     140            mov dptr, #No_Signal_Str
+04AB 120348     140            lcall ?Send_Constant_String
+04AE D0E0       140            pop acc
+04B0 D082       140            pop dpl
+04B2 D083       140            pop dph
+04B4 02044C     141       ljmp forever ; Repeat! 
+04B7            142   skip_this:
+04B7            143   
+04B7            144            ; Make sure [T2ov+1, T2ov+2, TH2, TL2]!=0
+04B7 E5CC       145            mov a, TL2
+04B9 45CD       146            orl a, TH2
+04BB 453D       147            orl a, T2ov+0
+04BD 453E       148            orl a, T2ov+1
+04BF 60D7       149            jz no_signal
+04C1            150            ; Using integer math, convert the period to frequency:
+04C1 85CC30     151            mov x+0, TL2
+04C4 85CD31     152            mov x+1, TH2
+04C7 853D32     153            mov x+2, T2ov+0
+04CA 853E33     154            mov x+3, T2ov+1
+04CD 75342D     155            mov y+0, #low (45 % 0x10000) 
+04D0 753500     155            mov y+1, #high(45 % 0x10000) 
+04D3 753600     155            mov y+2, #low (45 / 0x10000) 
+04D6 753700     155            mov y+3, #high(45 / 0x10000)  ; One clock pulse is 1/22.1184MHz=45.21123ns
+04D9 1201A8     156            lcall mul32 ;right now x has the value of the period
+04DC 0204F2     157       ljmp capMeasure
+04DF            158   printNum:
+04DF            159            ; Convert the result to BCD and display on LCD
+04DF C0E0       160            push acc
+04E1 740B       160            mov a, #11
+04E3 14         160            dec a
+04E4 120353     160            lcall ?Set_Cursor_2 ; Select column and row
+04E7 D0E0       160            pop acc
+04E9 12002E     161            lcall hex2bcd
+04EC 1203C2     162            lcall Display_10_digit_BCD
+04EF 02044C     163       ljmp forever ; Repeat! 
+04F2            164   capMeasure:
+04F2 753410     165            mov y+0, #low (10000 % 0x10000) 
+04F5 753527     165            mov y+1, #high(10000 % 0x10000) 
+04F8 753600     165            mov y+2, #low (10000 / 0x10000) 
+04FB 753700     165            mov y+3, #high(10000 / 0x10000)   ;since c = 0.0014117647*t when using a 10 ohm and 1kohm resistors
+04FE 120235     166       lcall div32
+0501 75340E     167            mov y+0, #low (14 % 0x10000) 
+0504 753500     167            mov y+1, #high(14 % 0x10000) 
+0507 753600     167            mov y+2, #low (14 / 0x10000) 
+050A 753700     167            mov y+3, #high(14 / 0x10000)   ; simplifying calculation by using 14
+050D 1201A8     168       lcall mul32
+0510 75340C     169            mov y+0, #low (12 % 0x10000) 
+0513 753500     169            mov y+1, #high(12 % 0x10000) 
+0516 753600     169            mov y+2, #low (12 / 0x10000) 
+0519 753700     169            mov y+3, #high(12 / 0x10000)  ;subtracting 12 as it detects the original capacitance in the circuit itself 
+051C 120114     170       lcall sub32
+051F 0204DF     171       ljmp printNum
+0522            172   
+0522            173   en
